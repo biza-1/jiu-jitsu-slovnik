@@ -18,7 +18,7 @@
         </div>         
         </form>
     </div>
-        
+       <div id="searchResult"></div>
  
  
  

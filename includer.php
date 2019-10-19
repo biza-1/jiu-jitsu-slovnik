@@ -1,4 +1,5 @@
 <?php // for including php functions || BIZA
-    include "functions/render.php";
+    include "php/render.php";
+    include "php/db.php";
 
 ?>
