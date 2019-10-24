@@ -1,5 +1,4 @@
 // these functions are not polished jet || BIZA
-// TODO polish functions
 
 // add comment
 function addComment() 
@@ -98,55 +97,7 @@ function deleteComment(id) {
         console.log('error', e.target.error.name);
     }
 }
-function get_comments() 
-    {
-        
-        
-        // ajax
-        var ajax = new XMLHttpRequest();
-        var method = 'GET';
-        var url = 'include/data.php';
-        var asynchronous = true;
-
-        ajax.open(method, url, asynchronous);
-
-        //sending ajax request
-        ajax.send();
-
-        // receiving response
-        ajax.onreadystatechange = function() 
-        {
-            if(this.readyState == 4 && this.status == 200)
-            {
-                // db
-                var transaction = db.transaction(['databasestore'], 'readwrite');
-                // ask for object sore
-                var store = transaction.objectStore('databasestore');
-                var data = JSON.parse(this.responseText);
-                //console.log(data);
-                //delete old stuff
-                var request = store.clear();
-
-                // callbacks
-                request.onsuccess = function(e) 
-                {
-                    for (i = 0; i < data.length; i++)
-                    { 
-                        store.put(data[i]);
-                        //console.log(data[i]);
-                    } 
-                }
-                request.onerror = function(e)
-                {
-                    alert('database wans cleaned');
-                    console.log('error', e.target.error.name);
-                }
-                
-            }
-        }
-    }
-    function addCommentMYSQL() 
-    {
+    function addCommentMYSQL() {
         var email = $('#email').val(); // jquery
         var content = $('#content').val();
         
@@ -160,3 +111,43 @@ function get_comments()
         });
 
     }    
+// from here are cleaned functinons
+// gets slovicka from DB using Dexie.js || BIZA
+function dbGetSlovicka() {   
+    // ajax   
+    $.ajax({
+        type: "POST",
+        url: "phpRequests/getSlovnik.php",
+        data: "check",
+        success: function(data) {    
+            //alert(data);
+            data = JSON.parse(data);
+            //console.log(data);    
+            db[sortStoreName].clear();    
+            db[sortStoreName].bulkPut(data).then(function(lastKey) {
+               
+            }).catch(Dexie.BulkError, function (e) {
+                
+                console.log("addin data didnt work ");
+            });
+        }
+        
+    
+    });      
+}
+// shows search result || BIZA
+// TODO change to get and render.js
+function getSearchResult() {    
+    // search value 
+    var searchValue = $('#nazev').val();
+    // smart searchs    
+    db[sortStoreName].where(czechIndexName).startsWithIgnoreCase(searchValue).toArray(function (data) {
+        //console.log(data); // showing results
+        showSearchResult(data);
+    });
+   
+   
+
+    
+    
+}
