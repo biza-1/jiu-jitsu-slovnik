@@ -1,17 +1,18 @@
 // serwice worker for offline mode || BIZA
 // cache name .
-const staticCahceName = 'site-static-v2';
-//const OFFLINE_URL = 'site-static-v2';
-const dynamicCacheName = 'site-dynamic-v2';
+const staticCacheName = 'site-static-v4';
+const dynamicCacheName = 'dynamic-image-saver';
 // if you want to cache something add it to array 
 const assets = [
   '/slovnik/',
   'index.php',
+  'pages/searchResult.php',
   'js/db.js',
   'js/dbFunctions.js',
   'js/functions.js',
   'js/caller.js',
   'js/render.js',
+  'js/callerSearchedWord.js',
   'manifest.json',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
@@ -24,46 +25,54 @@ const assets = [
   'images/icons/favicon.ico',
   'https://unpkg.com/dexie@latest/dist/dexie.js'
 ];
-// install service worker, only occurs when SW is changed
+// install event
 self.addEventListener('install', evt => {
-  //console.log("SW installed"); // tells once when installed
-  //self.skipWaiting();
+  //console.log('service worker installed');
   evt.waitUntil(
-    caches.open(staticCahceName)
-    .then(cache => cache.addAll(assets))
-  )
+    caches.open(staticCacheName).then((cache) => {
+      console.log('caching shell assets');
+      cache.addAll(assets);
+    })
+  );
 });
-// activate event, occurs after installation and is activated when all tabs have been closed
+
+// activate event
 self.addEventListener('activate', evt => {
-  //console.log("SW activated");
+  //console.log('service worker activated');
   evt.waitUntil(
     caches.keys().then(keys => {
       //console.log(keys);
       return Promise.all(keys
-        .filter(key => key !== staticCahceName)
+        .filter(key => key !== staticCacheName && key !== dynamicCacheName)
         .map(key => caches.delete(key))
-      )
+      );
     })
   );
 });
 
-
-// occurs every time there is fetch event(trying to get element)
-// if it finds the element in cache it returns it, if not it tries to get it from web
-// SW not activated due to testing
+// fetch events
 /*self.addEventListener('fetch', evt => {
-  //console.log('fetch event', evt);
-  evt.respondWith(
-    caches.match(evt.request).then(cacheRes => {
-      return cacheRes || fetch(evt.request);
-    }).catch(() => {
-      if(evt.request.url.indexOf('justcheck.html') > -1) {
-        console.log("ces")
-      } else if(evt.request.url.indexOf('.php') > -1) {
-        return caches.match('pages/fallback.html');
-      } else if(evt.request.url.indexOf('.html') > -1) {
-        return caches.match('pages/fallback.html');
-      }  
-    })
-  );
+  if(evt.request.url.indexOf('firestore.googleapis.com') === -1){
+    evt.respondWith(
+      caches.match(evt.request).then(cacheRes => {
+        return cacheRes || fetch(evt.request).then(fetchRes => {
+          return caches.open(dynamicCacheName).then(cache => {
+            if(evt.request.url.indexOf('images/images') > -1){ // load images from imageLoader.php to cache all images in this document (to cache entire folder of images)
+              cache.put(evt.request.url, fetchRes.clone());
+            }    
+            if(evt.request.url.indexOf('searchResult.php') > -1){ // opening search result because it contains id and cannot be all cached
+              return caches.match('pages/searchResult.php');
+            }                          
+            return fetchRes;
+          })
+        });
+      }).catch(() => {
+        if(evt.request.url.indexOf('.html') > -1){
+          return caches.match('/pages/fallback.html');
+        } else if(evt.request.url.indexOf('.php') > -1){
+          return caches.match('/pages/fallback.html');
+        } 
+      })
+    );
+  }
 });*/
