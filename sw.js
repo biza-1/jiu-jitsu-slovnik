@@ -30,7 +30,7 @@ self.addEventListener('install', evt => {
   //console.log('service worker installed');
   evt.waitUntil(
     caches.open(staticCacheName).then((cache) => {
-      console.log('caching shell assets');
+      //console.log('caching shell assets');
       cache.addAll(assets);
     })
   );
@@ -55,12 +55,18 @@ self.addEventListener('activate', evt => {
   if(evt.request.url.indexOf('firestore.googleapis.com') === -1){
     evt.respondWith(
       caches.match(evt.request).then(cacheRes => {
+        // if is search opened result because of ?something
+        if(evt.request.url.indexOf('searchResult.php') > -1){ // opening search result because it contains id and cannot be all cached
+          console.log("marek");
+          return caches.match('pages/searchResult.php');
+        }  
         return cacheRes || fetch(evt.request).then(fetchRes => {
           return caches.open(dynamicCacheName).then(cache => {
             if(evt.request.url.indexOf('images/images') > -1){ // load images from imageLoader.php to cache all images in this document (to cache entire folder of images)
               cache.put(evt.request.url, fetchRes.clone());
             }    
             if(evt.request.url.indexOf('searchResult.php') > -1){ // opening search result because it contains id and cannot be all cached
+              console.log("marek");
               return caches.match('pages/searchResult.php');
             }                          
             return fetchRes;

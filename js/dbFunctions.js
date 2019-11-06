@@ -1,153 +1,130 @@
-// these functions are not polished jet || BIZA
-
-// add comment
-function addComment() 
-{
-    var email = $('#email').val(); // jquery
-    var content = $('#content').val();
-
-    var transaction = db.transaction(['databasestore'], 'readwrite');
-    // ask for object sore
-    var store = transaction.objectStore('databasestore');
-
-    // define comment
-    var comment = {
-        email: email,
-        content: content
-    }
-
-    // perform add
-    var request = store.add(comment);
-    
-
-    // callbacks
-    request.onsuccess = function(e) {
-        //window.location.href = 'index.php';
-    }
-    request.onerror = function(e) {
-        alert('comment wans enerent');
-        console.log('error', e.target.error.name);
-    }
-}
-// show comments 
-function showComments(nummer) {
-    var transaction = db.transaction(['databasestore'], 'readonly');
-    // ask for object sore
-    var store = transaction.objectStore('databasestore');
-    var index = store.index('email');
-
-    var output = '';
-    index.openCursor(null, 'prev').onsuccess = function(e) {
-        var cursor = e.target.result;
-        if (cursor) {
-            output += '<div class="comment_div z-depth-1 comment_div_delete'+cursor.value.ID+'" >';
-            output += '<div class="comment_email_div"><p class="comment_email flow-text">'+cursor.value.email+'</p></div>';
-            output += '<div class="comment_content_div"><p class="comment_content flow-text">'+cursor.value.content+'</p></div>';
-            //output += '<a class="waves-effect waves-light btn" onclick="deleteComment('+cursor.value.ID+')"><i class="material-icons ">cancel</i></a>';
-            output +='</div>';
-            cursor.continue();
-        }
-        console.log(nummer);
-        if (nummer === 1) 
-        {
-            //$('#comment_content0').hide();
-            $('#comment_content0').html(output);
-            $('#comment_content0').ready(function() {
-                $('#comment_content0').show();
-                $('#comment_content1').hide();
-            });
-            
-        }
-        else if (nummer == 0)
-        {
-            //$('#comment_content1').hide();
-            $('#comment_content1').html(output);
-            $('#comment_content1').ready(function() {
-                $('#comment_content1').show();
-                $('#comment_content0').hide();
-            });
-        } 
-        else 
-        {
-            $('#comment_content0').hide();
-            $('#comment_content0').html(output);
-            $('#comment_content0').ready(function() {
-                $('#comment_content0').show();
-                $('#comment_content1').hide();
-            });
-        }
-
-    }
-}
-// delete comment
-function deleteComment(id) {
-    var transaction = db.transaction(['databasestore'], 'readwrite');
-    // ask for object sore
-    var store = transaction.objectStore('databasestore');
-
-    var request = store.delete(id);
-
-    // callbacks
-    request.onsuccess = function(e) {
-        console.log('comment deleted' + id);
-        $('.comment_div_delete'+id).remove();
-    }
-    request.onerror = function(e) {
-        alert('comment wans deleted');
-        console.log('error', e.target.error.name);
-    }
-}
-    function addCommentMYSQL() {
-        var email = $('#email').val(); // jquery
-        var content = $('#content').val();
-        
-        $.ajax({
-            type: "POST",
-            url: "function/insertmessage.php",
-            data: "email=" + email+ "&content=" + content,
-            success: function(data) {
-            alert("sucess");
-            }
-        });
-
-    }    
 // from here are cleaned functinons
 // gets slovicka from DB using Dexie.js || BIZA
 function dbGetSlovicka() {   
-    // ajax   
+    // AJAX  for updating DEXIE.js with Techniques and Words
     $.ajax({
         type: "POST",
         url: "phpRequests/getSlovnik.php",
         data: "check",
-        success: function(data) {    
-            //alert(data);
-            data = JSON.parse(data);
+        success: function(data) {   
+            data = JSON.parse(data);            
             //console.log(data);    
             db[sortStoreName].clear();    
             db[sortStoreName].bulkPut(data).then(function(lastKey) {
                
-            }).catch(Dexie.BulkError, function (e) {
-                
-                console.log("addin data didnt work ");
-            });
+            })            
+            // AJAX for getting metadata 
+            $.ajax({
+                type: "POST",            
+                url: "phpRequests/getMetadata.php",
+                data: "check",
+                success: function(data) {    
+                    data = JSON.parse(data);            
+                    //console.log(data);    
+                    db[metadataStoreName].clear();    
+                    db[metadataStoreName].bulkPut(data).then(function(lastKey) {
+                       
+                    })                    
+                    // calling it here to load after loading new resources                   
+                    getSearchResult();
+                }           
+            }); 
+            
         }
         
     
     });      
 }
-// shows search result || BIZA
-// TODO change to get and render.js
-function getSearchResult() {    
+// getting search result (supposed to be smart) || BIZA
+function getSearchResult() {        
+    // searching in czech or japanese and changing the value
+    if($('#japan_czech').text() == 'CZ') {var searchIn = czechIndexName;}else {var searchIn = japanIndexName;} // what to search in if in Japanese of Czech
     // search value 
     var searchValue = $('#nazev').val();
-    // smart searchs    
-    db[sortStoreName].where(czechIndexName).startsWithIgnoreCase(searchValue).toArray(function (data) {
-        //console.log(data); // showing results
-        showSearchResult(data);
-    });
-   
-   
-
+    //if search in Words / Techniques (and what techniques)
+    // techniques selected altributes
+    var techniquesCheckedAtributes = $('.selectAllDiselectAll:checked').map(function(){        
+        return $(this).data('searchvalue');
+       
+    }).get();
+    // with both    
+    var slovickaChecked = $('#TechniquesWordsOnClickSlovicka').is(':checked');
+    var techniquesChecked = $('#TechniquesWordsOnClickTechniky').is(':checked');
+    if(slovickaChecked && techniquesChecked) {
+        // smart searchs      
+        db[sortStoreName]
+        .where(searchIn)
+        .startsWithIgnoreCase(searchValue)
+        .and(function(data) {
+            if( data[typeIndexName] == "word") {
+                return true;
+            } else if (techniquesCheckedAtributes.includes(data[typeIndexName])) {
+                return true;
+            }
+        }).toArray(function (data) {
+            showSearchResult(data);                     
+        }); 
+    } else if(slovickaChecked) { // with only Word selected
+        // smart searchs      
+        db[sortStoreName]
+        .where(searchIn)
+        .startsWithIgnoreCase(searchValue)
+        .and(function(data) {
+            return data[typeIndexName] == "word";
+        }).toArray(function (data) {
+            showSearchResult(data);                     
+        }); 
+    } else if(techniquesChecked) { // with only Technques checked
+        // smart searchs      
+        db[sortStoreName]
+        .where(searchIn)
+        .startsWithIgnoreCase(searchValue)
+        .and(function(data) {            
+            return techniquesCheckedAtributes.includes(data[typeIndexName]);
+        }).toArray(function (data) {
+            showSearchResult(data);                     
+        }); 
+    } else {
+        showSearchResult(""); 
+    }
     
+       
     
+    //console.log("3");
+    //console.log(returnData);
+    //showSearchResult(returnData);
+}
+function getTechniquesToSearch() { //for searching metadata for Type of Techniques || BIZA
+    
+    db[metadataStoreName]
+    .where(keyIndexNameMetadata)
+    .equals("technique")
+    .toArray(function (data) {
+        showTechniquesToSearch(data);                     
+    });    
+}
+function getSimilarWords(search) { //for searching metadata for Type of Techniques || BIZA
+    
+    db[sortStoreName]
+    .where(japanIndexName)
+    .anyOf(search)
+    .toArray(function (data) {
+        showSimilarWords(data);  
+    });    
+}
+function getSimilarTechniques(search) { //for searching metadata for Type of Techniques || BIZA
+    
+    db[sortStoreName]
+    .where(typeIndexName)
+    .notEqual("word")
+    .and(function(data) {
+        var splitTechnique = data[japanIndexName].split(' ');
+        if (splitTechnique.includes(search)) {
+            return true;
+        }
+        
+    })
+    .toArray(function (data) {
+        showSimilarWords(data);  
+    });    
 }
