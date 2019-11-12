@@ -1,9 +1,16 @@
 <?php // zobrazovani obsahu
-    function search_result_render($data) { // zobrazi vyskedky vyhledavani || Duchoslav
+    function search_result_render($data, $language) { // zobrazi vyskedky vyhledavani || Duchoslav
         $returner = '';
-        foreach ($data as $key) {
-			$returner .= '<a class="waves-effect waves-light btn modal-trigger odkaz" href="#modal1" data-id="'.$key['ID'].'">'.$key['japanese'].'</a><br><span>'.$key['czech'].'</span><br><br>';
+        if($language == 'japanese') {
+            foreach ($data as $key) {
+                $returner .= '<a class="waves-effect waves-light btn modal-trigger odkaz" href="#modal1" data-id="'.$key['ID'].'">'.$key['japanese'].'</a><br><span>'.$key['czech'].'</span><br><br>';
+            }
+        } else {
+            foreach ($data as $key) {
+                $returner .= '<a class="waves-effect waves-light btn modal-trigger odkaz" href="#modal1" data-id="'.$key['ID'].'">'.$key['czech'].'</a><br><span>'.$key['japanese'].'</span><br><br>';
+            }
         }
+        
         return $returner;
 	}
     function popup_result($data) { // zobrazi vysledek v popup okne
@@ -16,6 +23,19 @@
             $returner .= "<input type='submit' name='submit' id='submit'>";
             $returner .= "</form>";
             $returner .= "<button id='delete'>Delete</button>";
+        }
+        return $returner;
+    }
+    function types_result($data) { // zobrazi typy v popup okne
+        $returner = '';
+        foreach ($data as $key) {
+            $returner .= "<br>";
+            $returner .= "<form method='POST' class='edit_type'>";
+            $returner .= "<input type='text' name='type-edit' id='type-edit' class='type-edit-".$key['ID']."' value='".$key['value']."'>";
+            //$returner .= "<input type='submit' name='submit' id='submit' data-id='".$key['ID']."'>";
+            $returner .= "<button type='submit' class='submit-edit' data-id='".$key['ID']."' value='Submit'>Odeslat</button>";
+            $returner .= "</form>";
+            $returner .= "<button id='delete_type' data-id='".$key['ID']."' class='delete_type'>Delete</button>";
         }
         return $returner;
     }

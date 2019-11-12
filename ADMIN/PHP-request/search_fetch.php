@@ -2,18 +2,23 @@
 	include '../includer.php';
 	
 	$text = $_GET['q'];
+	$language = $_GET['language'];
+	
 	// let's filter the data that comes in
 	$text = htmlspecialchars($text);
+	
 	// prepare the mysql query to select the users 
-	$get_name = $db->prepare("SELECT * FROM slovicka WHERE japanese LIKE concat('%', :name, '%')");
+	$get_name = $db->prepare("SELECT * FROM slovicka WHERE ".$language ." LIKE concat('%', '".$text ."', '%')");
 	// execute the query
-	$get_name -> execute(array('name' => $text));
+	$get_name -> execute(/*array('name' => $text, 'language' => $language)*/);
+	
 	// show the users on the page
+
 	while($names = $get_name->fetch(PDO::FETCH_ASSOC)){
 		$return[] = $names;
 	}
 	if (is_array($return) || is_object($return)) {
-		echo search_result_render($return);
+		echo search_result_render($return, $language);
 	}
 
 
