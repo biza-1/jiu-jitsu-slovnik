@@ -1,21 +1,49 @@
-function showSearchResult(data) { // to show search data || BIZA
-    //var data = getSearchResult();
-    //console.log(data);
+function showSearchResult(data) { // to show search data || BIZA 
     var output = '';
-    for (let i = 0; i < data.length; i++) {
-        output += '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">';
-        output += '<div class=" z-depth-1 " >';
-        if($('#japan_czech').text() == 'CZ') { // what to show first based on chosen search language
+    if($('#japan_czech').text() == 'CZ') { // what to show first based on chosen search language 
+        for (let i = 0; i < data.length; i++) {
+            output += '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">';
+            output += '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">';
             output += '<div class=""><p class=" flow-text">'+data[i][czechIndexName]+'</p></div>';
             output += '<div class=""><p class=" flow-text">'+data[i][japanIndexName]+'</p></div>';
-        } else {           
+            if (data[i][typeIndexName] == 'word') {
+                output += '<div class=""><p class=" flow-text">slovíčko</p></div>';
+            } else {
+                output += '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>';
+            }
+            // for showing stitky
+            output += '<div class="stitkyContainsContainer">';
+            output += '<p class=" flow-text">stityk</p>'
+            
+            output += '</div>';
+            output +='</div>';
+            // end for stitky
+            output +='</a>';        
+        }
+    } else {
+        for (let i = 0; i < data.length; i++) {
+            output += '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">';
+            output += '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">';
             output += '<div class=""><p class=" flow-text">'+data[i][japanIndexName]+'</p></div>';
             output += '<div class=""><p class=" flow-text">'+data[i][czechIndexName]+'</p></div>';
-        }        
-        output +='</div>';
-        output +='</a>';        
+            if (data[i][typeIndexName] == 'word') {
+                output += '<div class=""><p class=" flow-text">slovíčko</p></div>';
+            } else {
+                output += '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>';
+            }
+            output +='</div>';
+            // for showing stitky
+            output += '<div class="stitkyContainsContainer">';
+            output += '<p class=" flow-text">stityk</p>'
+            
+            output += '</div>';
+            output +='</div>';
+            output +='</a>';        
+        }
     }
     $('#searchResult').html(output);
+
+
 }
 function showOpenedeResult(data) { // to show opened data || BIZA
     //var data = getSearchResult();
@@ -82,4 +110,33 @@ function showTechniquesToSearch(data) { // showing thign that lets you choose wh
         output += '</p>'         
     }
     $('#techniquesChooser').html(output);
+}
+// shows modal stitky added || BIZA
+function showModalStitkyAdder() {
+    var output = '';
+    output += '<div class="row">';
+    output += '<form class="col s12" id="stitkyForm>';
+    output += '<div class="row">';
+    output += '<div class="input-field col s10">';
+    output += '<input id="nazevStitku" type="text" class="validate" data-lpignore="true">';
+    output += '<label for="nazevStitku">Název štítku</label>';
+    output += '<p class="flow-text red" id="StitkyMessage"></p>';
+    output += '</div>';
+    output += '<a class="btn-floating btn-large waves-effect waves-light red right" id="pridatStitekButton"><i class="material-icons">add</i></a>';
+    output += '</form>';
+    output += '</div>';
+    output += '<div id="modalStitkyConrolerrDiv">'; // div for showing all checkboxes
+    output += '</div>';
+    $('#LabelAdd').html(output);
+}
+// shows modal stitky adder || BIZA
+function showModalStitkyController(data) {
+    output = '';
+    for (let i = 0; i < data.length; i++) {
+        output += '<div class="modalStitkyControleerContainer"><p class=" flow-text">'+data[i][nameIndexNameLABELS]+'</p>';
+        output += '<a class="btn-floating btn-small waves-effect waves-light red right buttonsToAddRemove modalStitkyAdd" data-id="'+data[i][IDIndexNameINLABELS]+'" ><i class="material-icons">add</i></a>';
+        output += '<a class="btn-floating btn-small waves-effect waves-light red right buttonsToAddRemove modalStitkyRemove" data-id="'+data[i][IDIndexNameINLABELS]+'" ><i class="material-icons">remove</i></a>';
+        output += '</div>';
+    }    
+    $('#modalStitkyConrolerrDiv').html(output);    
 }
