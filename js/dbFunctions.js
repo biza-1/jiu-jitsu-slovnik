@@ -10,7 +10,10 @@ function dbGetSlovicka() {
       data = JSON.parse(data);
       //console.log(data);
       db[sortStoreName].clear();
-      db[sortStoreName].bulkPut(data).then(function(lastKey) {});
+      db[sortStoreName].bulkPut(data);
+      // for fiiling another table for STITY
+      stitkyIDnames = data.map(data => ({ [idOfWordsStitky]: data.ID }));
+      addStitkyToNamesStitkyDB(stitkyIDnames); // adds id of stitky
       // AJAX for getting metadata
       $.ajax({
         type: "POST",
@@ -20,7 +23,7 @@ function dbGetSlovicka() {
           data = JSON.parse(data);
           //console.log(data);
           db[metadataStoreName].clear();
-          db[metadataStoreName].bulkPut(data).then(function(lastKey) {});
+          db[metadataStoreName].bulkPut(data);
           // calling it here to load after loading new resources
           getSearchResult();
           // to show techniques collapisble onLoad
@@ -215,20 +218,19 @@ function signOut() {
 function checkIfStitekIsInDB(value) {
   return getUserID().then(function(UserId) {
     return db[labesStoreName]
-    .where(nameIndexNameLABELS)
-    .equals(value)
-    .and(function(data) {
-      return data[userIDIndexNameINLABELS] === UserId;
-    })
-    .toArray(function(data) {
-      if (typeof data !== "undefined" && data.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+      .where(nameIndexNameLABELS)
+      .equals(value)
+      .and(function(data) {
+        return data[userIDIndexNameINLABELS] === UserId;
+      })
+      .toArray(function(data) {
+        if (typeof data !== "undefined" && data.length > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      });
   });
-  
 }
 // gets user id from indexedDb || BIZA
 function getUserID() {
@@ -237,7 +239,7 @@ function getUserID() {
     .equals(0)
     .toArray(function(data) {
       if (typeof data !== "undefined" && data.length > 0) {
-        return data[0]['value'];
+        return data[0]["value"];
       } else {
         return false;
       }
@@ -247,103 +249,353 @@ function getUserID() {
 function checkStitkyAmmount() {
   return getUserID().then(function(UserId) {
     return db[labesStoreName]
-    .where(userIDIndexNameINLABELS)
-    .equals(UserId)
-    .toArray(function(data) {
-      if (typeof data !== "undefined" && data.length > 0) {
-        return data.length;
-      } else {        
-        return 0;
-      }
-    });
+      .where(userIDIndexNameINLABELS)
+      .equals(UserId)
+      .toArray(function(data) {
+        if (typeof data !== "undefined" && data.length > 0) {
+          return data.length;
+        } else {
+          return 0;
+        }
+      });
   });
 }
 // adds stitek to db || BIZA
 function addStitektoDb(nazevStitku) {
-  getUserID().then(function(userID) {
+  return getUserID().then(function(userID) {
     dataAdd = {
       [userIDIndexNameINLABELS]: userID,
       [nameIndexNameLABELS]: nazevStitku
     };
-    db[labesStoreName].put(dataAdd);
-  });  
+    return db[labesStoreName].put(dataAdd);
+  });
 }
 // function to get all STITKY Names || BIZA
-function getModalStitkyController() {
+function getModalStitkyController(a) {
   getUserID().then(function(UserId) {
     db[labesStoreName]
-    .where(userIDIndexNameINLABELS)
-    .equals(UserId)
-    .toArray(function(data) {
-      if (typeof data !== "undefined" && data.length > 0) {
-        showModalStitkyController(data);
-      }
-    });
+      .where(userIDIndexNameINLABELS)
+      .equals(UserId)
+      .toArray(function(data) {
+        if (typeof data === "undefined" && data.length <= 0) {
+          data = [];
+        }
+        if (a == 0) {
+          showModalStitkyController(data);
+        } else {
+          showModalStitkyControllerSTITKY(data);
+        }
+      });
   });
 }
 // to label words with STITEk || BIZA
 function addLabelsToWords(id, idOfWords, nameOfTehcniques) {
   db[labesStoreName]
-  .where(IDIndexNameINLABELS)
-  .equals(id)
-  .toArray(function(data) {
-    if (typeof data[0][containsIndexNameLABELS] !== "undefined" && data[0][containsIndexNameLABELS].length > 0) {
-      var soucasneHodnoty = data[0][containsIndexNameLABELS];
-      var pridanaArray = arrayUnique(soucasneHodnoty.concat(idOfWords));
-      db[labesStoreName].update(id, {[containsIndexNameLABELS]: pridanaArray});
-    } else {        
-      db[labesStoreName].update(id, {[containsIndexNameLABELS]: idOfWords});
-    }
-    // TODO call search result to show change STITKY
-  }).then(function() {// this thing is for faster displaying 
-    // this is because ID are taken as string so i have to convert to it
-    var whereToSeacht = '';
-    for (let index = 0; index < idOfWords.length; index++) {
-      whereToSeacht += '"'+idOfWords[index]+'",'
-    }
-    whereToSeacht = whereToSeacht.slice(0, -1);
-    console.log(whereToSeacht);
-    db[sortStoreName]
-    .where(IDIndexName)
-    .anyOfIgnoreCase(whereToSeacht)
+    .where(IDIndexNameINLABELS)
+    .equals(id)
     .toArray(function(data) {
-      console.log(data);
-      for (let index = 0; index < data.length; index++) {
-        if (typeof data[index][StitkyForShowing] !== "undefined" && data[index][StitkyForShowing].length > 0) {
-          var soucasneHodnoty = data[index][StitkyForShowing];
-          var pridanaArray = arrayUnique(soucasneHodnoty.concat(nameOfTehcniques));
-          db[sortStoreName].update(data[index][IDIndexName], {[StitkyForShowing]: pridanaArray});
-        } else {        
-          db[sortStoreName].update(data[index][IDIndexName], {[StitkyForShowing]: nameOfTehcniques});
-        }
+      if (
+        typeof data[0][containsIndexNameLABELS] !== "undefined" &&
+        data[0][containsIndexNameLABELS].length > 0
+      ) {
+        var soucasneHodnoty = data[0][containsIndexNameLABELS];
+        var pridanaArray = arrayUnique(soucasneHodnoty.concat(idOfWords));
+        db[labesStoreName].update(id, {
+          [containsIndexNameLABELS]: pridanaArray
+        });
+      } else {
+        db[labesStoreName].update(id, { [containsIndexNameLABELS]: idOfWords });
       }
     })
-    
-  });
+    .then(function() {
+      // this thing is for faster displaying
+      addSTITKYlabelToWord(idOfWords, nameOfTehcniques);
+    });
 }
 // to remove label words from STITEk || BIZA
-function removeLabelFromWord(id, idOfWords) {
+function removeLabelFromWord(id, idOfWords, nameOfTehcniques, ifJump) {
   db[labesStoreName]
-  .where(IDIndexNameINLABELS)
-  .equals(id)
-  .toArray(function(data) {
-    if (typeof data[0][containsIndexNameLABELS] !== "undefined" && data[0][containsIndexNameLABELS].length > 0) {
-      var soucasneHodnoty = data[0][containsIndexNameLABELS];
-      var array1 = soucasneHodnoty;
-      var array2 = idOfWords;
-      var index;
-      // remove same attributes to remove STITKY
-      for (var i=0; i<array2.length; i++) {
-        index = array1.indexOf(array2[i]);
-        if (index > -1) {
+    .where(IDIndexNameINLABELS)
+    .equals(id)
+    .toArray(function(data) {
+      if (
+        typeof data[0][containsIndexNameLABELS] !== "undefined" &&
+        data[0][containsIndexNameLABELS].length > 0
+      ) {
+        var soucasneHodnoty = data[0][containsIndexNameLABELS];
+        var array1 = soucasneHodnoty;
+        var array2 = idOfWords;
+        var index;
+        // remove same attributes to remove STITKY
+        for (var i = 0; i < array2.length; i++) {
+          index = array1.indexOf(array2[i]);
+          if (index > -1) {
             array1.splice(index, 1);
+          }
+        }
+        pridanaArray = array1;
+        db[labesStoreName].update(id, {
+          [containsIndexNameLABELS]: pridanaArray
+        });
+      }
+    })
+    .then(function() {
+      // this thing is for faster displaying
+      // convering to string to be able to serch
+      whereToSeacht = idOfWords.map(String);
+      db[stitkyStoreName]
+        .where(idOfWordsStitky)
+        .anyOf(whereToSeacht)
+        .toArray(function(data) {
+          for (let index2 = 0; index2 < data.length; index2++) {
+            if (
+              typeof data[index2][StitkyForShowing] !== "undefined" &&
+              data[index2][StitkyForShowing].length > 0
+            ) {
+              var soucasneHodnoty = data[index2][StitkyForShowing];
+              var array1 = soucasneHodnoty;
+              var array2 = nameOfTehcniques;
+              // remove same attributes to remove STITKY
+              for (var i = 0; i < array1.length; i++) {
+                if (array1[i] === array2) {
+                  array1.splice(i, 1);
+                }
+              }
+              pridanaArray = array1;
+              db[stitkyStoreName].update(data[index2][idOfWordsStitky], {
+                [StitkyForShowing]: pridanaArray
+              });
+            }
+          }
+          if (ifJump === 1) {
+            getLabelContains(id);
+          }
+        });
+      // TODO call search result to show change STITKY
+    });
+}
+function addSTITKYlabelToWord(idOfWords, nameOfTehcniques) {
+  // convering to string to be able to serch
+  whereToSeacht = idOfWords.map(String);
+  db[stitkyStoreName]
+    .where(idOfWordsStitky)
+    .anyOf(whereToSeacht)
+    .toArray(function(data) {
+      for (let index = 0; index < data.length; index++) {
+        if (
+          typeof data[index][StitkyForShowing] !== "undefined" &&
+          data[index][StitkyForShowing].length > 0
+        ) {
+          var soucasneHodnoty = data[index][StitkyForShowing];
+          var pridanaArray = arrayUnique(
+            soucasneHodnoty.concat(nameOfTehcniques)
+          );
+          db[stitkyStoreName].update(data[index][idOfWordsStitky], {
+            [StitkyForShowing]: pridanaArray
+          });
+        } else {
+          var arrayOfTechiques = [];
+          arrayOfTechiques.push(nameOfTehcniques);
+          db[stitkyStoreName].update(data[index][idOfWordsStitky], {
+            [StitkyForShowing]: arrayOfTechiques
+          });
         }
       }
-      pridanaArray = array1;
-      db[labesStoreName].update(id, {[containsIndexNameLABELS]: pridanaArray});
-    } else {        
-      db[labesStoreName].update(id, {[containsIndexNameLABELS]: idOfWords});
-    }
-    // TODO call search result to show change STITKY
+    });
+  // TODO call search result to show change STITKY
+}
+// for adding id of extended words stitky|| BIZA
+function addStitkyToNamesStitkyDB(data) {
+  db[stitkyStoreName].bulkAdd(data);
+  // TODO OPTIMIZE THE IDes, ID that not match > delete
+}
+// for rewriting the arrayOfNamesStity so i dont have to run query every time
+function getAndApeendNamesStitky() {
+  return db[stitkyStoreName]
+    .where(StitkyForShowing)
+    .notEqual("")
+    .toArray(function(data) {
+      return data;
+    });
+}
+// to remove ENITRE label from STITEk || BIZA
+function removeLabelFromWordENTRELY(id, nameOfTehcniques) {
+  return db[labesStoreName]
+    .where(IDIndexNameINLABELS)
+    .equals(id)
+    .toArray(function(data) {
+      if (
+        typeof data[0][containsIndexNameLABELS] !== "undefined" &&
+        data[0][containsIndexNameLABELS].length > 0
+      ) {
+        var soucasneHodnoty = data[0][containsIndexNameLABELS];
+        return soucasneHodnoty;
+      } else {
+        return [];
+      }
+    })
+    .then(function(idOfWords) {
+      // this thing is for faster displaying
+      // convering to string to be able to serch
+      whereToSeacht = idOfWords.map(String);
+      db[stitkyStoreName]
+        .where(idOfWordsStitky)
+        .anyOf(whereToSeacht)
+        .toArray(function(data) {
+          for (let index2 = 0; index2 < data.length; index2++) {
+            if (
+              typeof data[index2][StitkyForShowing] !== "undefined" &&
+              data[index2][StitkyForShowing].length > 0
+            ) {
+              var soucasneHodnoty = data[index2][StitkyForShowing];
+              var array1 = soucasneHodnoty;
+              var array2 = nameOfTehcniques;
+              console.log(soucasneHodnoty);
+              console.log(nameOfTehcniques + "anove");
+              // remove same attributes to remove STITKY
+              for (var i = 0; i < array1.length; i++) {
+                if (array1[i] === array2) {
+                  array1.splice(i, 1);
+                }
+              }
+              console.log(array1);
+              pridanaArray = array1;
+              db[stitkyStoreName].update(data[index2][idOfWordsStitky], {
+                [StitkyForShowing]: pridanaArray
+              });
+            }
+          }
+        });
+      // TODO call search result to show change STITKY
+    })
+    .then(function() {
+      db[labesStoreName]
+        .where(IDIndexNameINLABELS)
+        .equals(id)
+        .delete();
+    });
+}
+// gets what label cotains || BIZA
+function getLabelContains(id) {
+  id = parseInt(id);
+  db[labesStoreName]
+    .where(IDIndexNameINLABELS)
+    .equals(id)
+    .toArray(function(data) {
+      $("#name").html(data[0][nameIndexNameLABELS]);
+      getSearchResultByID(data[0][containsIndexNameLABELS], data);
+    });
+}
+// gets search result by ID || BIZA
+function getSearchResultByID(ids, StitkyData) {
+  searc = ids.map(String);
+  db[sortStoreName]
+    .where(IDIndexName)
+    .anyOf(searc)
+    .toArray(function(data) {
+      showSearchResultBYID(data, StitkyData);
+    });
+}
+// gets all stitky for uplading to db || BIZA
+function getAllStitky() {
+  getUserID().then(function(UserId) {
+    db[labesStoreName]
+      .where(userIDIndexNameINLABELS)
+      .equals(UserId)
+      .toArray(function(data) {
+        data = JSON.stringify(data);
+        uploadStitkyToDB(data, UserId);
+      });
   });
+}
+// downloads Stitky from db and adds them to IndexedDb || BIZA
+function downlaodStitky() {
+  getUserID().then(function(UserId) {
+    $.ajax({
+      type: "POST",
+      url: "../phpRequests/getStitkyfromDb.php",
+      data: "check=5&UserID=" + UserId,
+      success: function(data) {
+        data = JSON.parse(data);
+        if (typeof data !== "undefined" || data.length > 0) {
+          // cleans stitky store name to later new appendetion
+          db[stitkyStoreName].toCollection().modify(function(stitky) {
+            stitky[StitkyForShowing] = [];
+          });
+          // deletes everything with user id to clean and be able to add new
+          db[labesStoreName]
+            .where(userIDIndexNameINLABELS)
+            .equals(data[0]["UserID"])
+            .delete()
+            .then(function() {
+              contaisStitky = JSON.parse(data[0]["contains"]);
+              for (let index = 0; index < contaisStitky.length; index++) {
+                // for adding new stitek to db
+                addStitektoDb(contaisStitky[index]["name"]).then(function(
+                  idOfStitkyName
+                ) {
+                  // for appending data to new stitek
+                  addLabelsToWords(
+                    idOfStitkyName,
+                    contaisStitky[index]["contains"],
+                    contaisStitky[index]["name"]
+                  );
+                });
+              }
+              getModalStitkyController(1); // shows all Stitky
+            });
+        } else {
+          alert("nic neni v databazi");
+        }
+      }
+    });
+  });
+}
+// for renaming stitek in DB || BIZA
+function renameStitekInDB(idOfStitek, nameOfStitek, oldNameOfStitek) {
+  db[labesStoreName].update(idOfStitek, {
+    [nameIndexNameLABELS]: nameOfStitek
+  });
+  return db[labesStoreName]
+    .where(IDIndexNameINLABELS)
+    .equals(idOfStitek)
+    .toArray(function(data) {
+      return data[0][containsIndexNameLABELS];
+    })
+    .then(function(data) {
+      removeStitekDb(data, oldNameOfStitek);
+      addSTITKYlabelToWord(data, nameOfStitek);
+    });
+}
+// removes stitek from stitky so i can change name || BIZA
+function removeStitekDb(idOfWords, nameOfTehcniques) {
+  whereToSeacht = idOfWords.map(String);
+  db[stitkyStoreName]
+    .where(idOfWordsStitky)
+    .anyOf(whereToSeacht)
+    .toArray(function(data) {
+      for (let index2 = 0; index2 < data.length; index2++) {
+        if (
+          typeof data[index2][StitkyForShowing] !== "undefined" &&
+          data[index2][StitkyForShowing].length > 0
+        ) {
+          var soucasneHodnoty = data[index2][StitkyForShowing];
+          var array1 = soucasneHodnoty;
+          var array2 = nameOfTehcniques;
+          // remove same attributes to remove STITKY
+          for (var i = 0; i < array1.length; i++) {
+            if (array1[i] === array2) {
+              array1.splice(i, 1);
+            }
+          }
+          pridanaArray = array1;
+          db[stitkyStoreName].update(data[index2][idOfWordsStitky], {
+            [StitkyForShowing]: pridanaArray
+          });
+        }
+      }
+      if (ifJump === 1) {
+        getLabelContains(id);
+      }
+    });
 }

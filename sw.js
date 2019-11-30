@@ -7,6 +7,8 @@ const assets = [
   '/slovnik/',
   'index.php',
   'pages/searchResult.php',
+  'pages/stitky.php',
+  'pages/StitkyResult.php',
   'js/db.js',
   'js/dbFunctions.js',
   'js/functions.js',
@@ -24,7 +26,8 @@ const assets = [
   'https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
   'pages/fallback.html',
   'images/icons/favicon.ico',
-  'https://unpkg.com/dexie@latest/dist/dexie.js'
+  'https://unpkg.com/dexie@latest/dist/dexie.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js' // for __ operations
 ];
 // install event
 self.addEventListener('install', evt => {
@@ -58,18 +61,16 @@ self.addEventListener('activate', evt => {
       caches.match(evt.request).then(cacheRes => {
         // if is search opened result because of ?something
         if(evt.request.url.indexOf('searchResult.php') > -1){ // opening search result because it contains id and cannot be all cached
-          console.log("marek");
           return caches.match('pages/searchResult.php');
+        } else if(evt.request.url.indexOf('StitkyResult.php') > -1){ // opening search result because it contains id and cannot be all cached
+          console.log("marek");
+          return caches.match('pages/StitkyResult.php');
         }  
         return cacheRes || fetch(evt.request).then(fetchRes => {
           return caches.open(dynamicCacheName).then(cache => {
             if(evt.request.url.indexOf('images/images') > -1){ // load images from imageLoader.php to cache all images in this document (to cache entire folder of images)
               cache.put(evt.request.url, fetchRes.clone());
-            }    
-            if(evt.request.url.indexOf('searchResult.php') > -1){ // opening search result because it contains id and cannot be all cached
-              console.log("marek");
-              return caches.match('pages/searchResult.php');
-            }                          
+            }              
             return fetchRes;
           })
         });

@@ -21,6 +21,7 @@
         $render .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">';
         $render .= '<script src="https://apis.google.com/js/platform.js" async defer></script>';
         $render .= '<script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>'; // less Violations > better performance
+        $render .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>'; // for some __ operations
         return $render;    
     }
     function renderJsLink($dots) { // for rendering JS links || BIZA    
@@ -39,7 +40,7 @@
         $render .= '<script src="'.$dotingSystem.'js/caller.js"></script>'; 
         return $render;    
     }    
-    function renderJSSubLinks($dots) { // for rendering JS links outside index.php (doesnt load SW or use the same caller) || BIZA    
+    function renderJSSubLinks($dots, $nameOfJSCaller) { // for rendering JS links outside index.php (doesnt load SW) || BIZA    
         $dotas = "../"; // add dots to choose folder automaticly
         $dotingSystem = "";        
         for ($i=0; $i < $dots; $i++) {
@@ -52,10 +53,15 @@
         $render .= '<script src="'.$dotingSystem.'js/dbFunctions.js"></script>';   
         $render .= '<script src="'.$dotingSystem.'js/functions.js"></script>'; 
         $render .= '<script src="'.$dotingSystem.'js/render.js"></script>';       
-        $render .= '<script src="'.$dotingSystem.'js/callerSearchedWord.js"></script>';   
+        $render .= '<script src="'.$dotingSystem.'js/'.$nameOfJSCaller.'"></script>';   
         return $render;    
     }    
-    function renderSideNav() {
+    function renderSideNav($dots) {
+        $dotas = "../"; // add dots to choose folder automaticly
+        $dotingSystem = "";        
+        for ($i=0; $i < $dots; $i++) {
+            $dotingSystem .= $dotas;
+        }
         $render = '';
         //$render .= '<nav> <!-- navbar content here  --> </nav>';
         $render .= '
@@ -71,7 +77,7 @@
             
             </div>
           </li>          
-          <li><a href="#!">Second Link</a></li>
+          <li><a href="'.$dotingSystem.'pages/stitky.php">Štítky</a></li>
           <li><div class="divider"></div></li>
           
           <li><a class="waves-effect" href="#!">O nás</a></li>

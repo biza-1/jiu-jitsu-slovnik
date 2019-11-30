@@ -14,6 +14,6 @@
     
  
  
-    <?=renderJSSubLinks(1)?>        
+    <?=renderJSSubLinks(1, 'callerSearchedWord.js')?>        
     </body>
 </html>

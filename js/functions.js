@@ -140,3 +140,32 @@ function arrayUnique(array) {
 
   return a;
 }
+// for combininig arrrays of objects by ID
+function combineArraysOfObjects(a1, a2) {
+  var mergedList = _.map(a1, function(item){
+    return _.extend(item, _.findWhere(a2, { ID: item.ID }));
+  });
+  return mergedList;
+}
+// uploads stitky to MYSQL || BIZA
+function uploadStitkyToDB(uploadData, userID) {
+  $.ajax({
+    type: "POST",
+    url: "../phpRequests/uploadStityktoDB.php",
+    data: "check=5&data="+uploadData+'&userID=' + userID,
+    success: function(data) {
+      console.log(data);
+    }
+  });
+}
+// for checking unchecking STITKY selector || BIZA
+function ifSelectAllStityk() {
+   if (
+    $(".searchResultDiv").length ==
+    $(".selectedSearchResult").length
+  ) {
+    $("#selectAllDiselectAllControllerSTITKY").prop("checked", true);
+  } else {
+    $("#selectAllDiselectAllControllerSTITKY").prop("checked", false);
+  }
+}

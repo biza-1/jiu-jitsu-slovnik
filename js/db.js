@@ -7,7 +7,6 @@ var IDIndexName = 'ID';
 var czechIndexName = 'czech';
 var japanIndexName = 'japanese';
 var typeIndexName = 'type';
-var StitkyForShowing = 'STITKYHolder';
 // non indexes of slovicka
 var imageUrlNONIndexName = 'imageUrl';
 var contentNONIndexName = 'content';
@@ -22,10 +21,15 @@ var IDIndexNameINLABELS = 'ID';
 var userIDIndexNameINLABELS = 'userID';
 var nameIndexNameLABELS = 'name';
 var containsIndexNameLABELS = 'contains';
+// extended store for words to keep name of STITKY > words renew every time on wifi
+var stitkyStoreName = 'stitky';
+var idOfWordsStitky = 'ID';
+var StitkyForShowing = 'STITKYHolder';
 // DEXIE.js (Very smart >NICE<)
 var db = new Dexie(dbName);
 db.version(1).stores({ // the name has to coreespond with sortStoreName
-    [sortStoreName]: IDIndexName+','+czechIndexName+','+japanIndexName+','+typeIndexName+','+StitkyForShowing,
+    [sortStoreName]: IDIndexName+','+czechIndexName+','+japanIndexName+','+typeIndexName,
     [metadataStoreName]: IDIndexNameINMetadata+','+keyIndexNameMetadata+','+valueIndexNameMetadata,
-    [labesStoreName]:   '++' + IDIndexNameINLABELS+','+userIDIndexNameINLABELS +','+  nameIndexNameLABELS +','+ containsIndexNameLABELS
+    [labesStoreName]:   '++' + IDIndexNameINLABELS+','+userIDIndexNameINLABELS +','+  nameIndexNameLABELS +','+ containsIndexNameLABELS,
+    [stitkyStoreName]: idOfWordsStitky +','+StitkyForShowing
 });

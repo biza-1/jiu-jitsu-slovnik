@@ -18,6 +18,7 @@
 .modalStitkyControleerContainer {
     width: 100%;
     height: 3rem;
+    margin-bottom: 2rem;
 }
 .buttonsToAddRemove {
     margin-right: 2.3rem;

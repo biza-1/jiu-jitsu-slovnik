@@ -21,8 +21,19 @@ include "includer.php";
       </div>
     </form>
   </div>
+  <!-- searching word TEST -->
+  <div class="row">
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="nazev2" type="text" class="validate">
+          <label for="nazev2">Název</label>
+        </div>
+      </div>
+    </form>
+  </div>
   <!-- side nav-->
-  <?=renderSideNav()?>
+  <?=renderSideNav(0)?>
   <!-- Czech/Japanese search -->
   <a class="waves-effect waves-light btn" id="japan_czech">CZ</a>
   <!-- checking if you want to see words or tequineques -->
@@ -56,6 +67,14 @@ include "includer.php";
 
   <!-- box for long hold -->
   <div id="longHoldBox">
+    <!-- for closin and removing class from everything-->
+    <a class="btn-floating btn-small waves-effect waves-light red" id="closeStitkySelecetor"><i class="material-icons">cancel</i></a>
+    <p>
+      <label>
+        <input type="checkbox" id="selectAllDiselectAllControllerSTITKY" />
+        <span>Vybrat vše</span>
+      </label>
+    </p>
     <a class="waves-effect waves-light btn modal-trigger right" href="#modal1" id="StitkyModalOpener">Změnit štítky</a>
   </div>
   <!-- modal for adding labels -->
