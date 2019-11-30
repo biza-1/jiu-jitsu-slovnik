@@ -53,7 +53,14 @@ function getSearchResult() {
   // with both
   var slovickaChecked = $("#TechniquesWordsOnClickSlovicka").is(":checked");
   var techniquesChecked = $("#TechniquesWordsOnClickTechniky").is(":checked");
-  if (slovickaChecked && techniquesChecked) {
+  if (showAllThing) {
+    db[sortStoreName]
+      .orderBy(searchIn)
+      .toArray(function(data) {
+        console.log(data);
+        showSearchResult(data);
+      });
+  } else if (slovickaChecked && techniquesChecked) {
     // smart searchs
     db[sortStoreName]
       .where(searchIn)
