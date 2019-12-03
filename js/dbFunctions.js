@@ -14,6 +14,8 @@ function dbGetSlovicka() {
       // for fiiling another table for STITY
       stitkyIDnames = data.map(data => ({ [idOfWordsStitky]: data.ID }));
       addStitkyToNamesStitkyDB(stitkyIDnames); // adds id of stitky
+      // for adding stitky to SLOVICKA because it erases every time
+      updateSlovickaWithStitky();
       // AJAX for getting metadata
       $.ajax({
         type: "POST",
@@ -36,6 +38,11 @@ function dbGetSlovicka() {
 // getting search result (supposed to be smart) || BIZA
 function getSearchResult() {
   // searching in czech or japanese and changing the value
+  if ($(".selectAllDiselectAll").length == 0) {
+    var showAllThing = true;
+  } else {
+    var showAllThing = false;
+  }
   if ($("#japan_czech").text() == "CZ") {
     var searchIn = czechIndexName;
   } else {
@@ -54,14 +61,16 @@ function getSearchResult() {
   var slovickaChecked = $("#TechniquesWordsOnClickSlovicka").is(":checked");
   var techniquesChecked = $("#TechniquesWordsOnClickTechniky").is(":checked");
   if (showAllThing) {
-    db[sortStoreName]
-      .orderBy(searchIn)
-      .toArray(function(data) {
-        console.log(data);
-        showSearchResult(data);
-      });
+    var t2 = performance.now();
+    db[sortStoreName].orderBy(searchIn).toArray(function(data) {
+      console.log(data);
+      var t3 = performance.now();
+      console.log("ziskani bez vyhledavani " + (t3 - t2) + " milliseconds.");
+      showSearchResult(data);
+    });
   } else if (slovickaChecked && techniquesChecked) {
     // smart searchs
+    /*var t0 = performance.now();
     db[sortStoreName]
       .where(searchIn)
       .startsWithIgnoreCase(searchValue)
@@ -73,6 +82,18 @@ function getSearchResult() {
         }
       })
       .toArray(function(data) {
+        showSearchResult(data);
+        var t1 = performance.now();
+        console.log("ziskani s vyhledanim " + (t1 - t0) + " milliseconds.");
+      });*/
+    techniquesCheckedAtributes.push("word");
+    var t0 = performance.now();
+    db[sortStoreName]
+      .where(typeIndexName)
+      .anyOf(techniquesCheckedAtributes)
+      .toArray(function(data) {
+        var t1 = performance.now();
+        console.log("ziskani s vyhledanim " + (t1 - t0) + " milliseconds.");
         showSearchResult(data);
       });
   } else if (slovickaChecked) {
@@ -605,4 +626,50 @@ function removeStitekDb(idOfWords, nameOfTehcniques) {
         getLabelContains(id);
       }
     });
+}
+// for adding stitky directly to words
+function addSTITKYToWords(idOfWords, nameOfTehcniques) {
+  // convering to string to be able to serch
+  whereToSeacht = idOfWords.map(String);
+  db[sortStoreName]
+    .where(IDIndexName)
+    .anyOf(whereToSeacht)
+    .toArray(function(data) {
+      console.log(data)
+      for (let index = 0; index < data.length; index++) {
+        if (
+          typeof data[index][StitkyForShowing] !== "undefined" &&
+          data[index][StitkyForShowing].length > 0
+        ) {
+          var soucasneHodnoty = data[index][StitkyForShowing];
+          var pridanaArray = arrayUnique(
+            soucasneHodnoty.concat(nameOfTehcniques)
+          );
+          db[sortStoreName].update(data[index][IDIndexName], {
+            [StitkyForShowing]: pridanaArray
+          });
+        } else {
+          var arrayOfTechiques = [];
+          arrayOfTechiques.push(nameOfTehcniques);
+          db[sortStoreName].update(data[index][IDIndexName], {
+            [StitkyForShowing]: arrayOfTechiques
+          });
+        }
+      }
+    });
+  // TODO call search result to show change STITKY
+}
+// gets
+function updateSlovickaWithStitky() {
+  getUserID().then(function(UserId) {
+    db[labesStoreName]
+      .where(userIDIndexNameINLABELS)
+      .equals(UserId)
+      .toArray(function(data) {
+        for (const element of data) {
+          addSTITKYToWords(element[containsIndexNameLABELS], element[nameIndexNameLABELS]);
+          //console.log(element);
+        }
+      });
+  });
 }

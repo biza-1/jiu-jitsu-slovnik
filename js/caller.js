@@ -57,7 +57,8 @@ $(document).ready(function() {
     var jakDaleko = $('.searchINByJQUERY:contains("'+searchValue+'")').first().offset().top;
     console.log(jakDaleko);
     //$(document).scrollTop(jakDaleko-velikostDocment+velikostDocment2);
-    $('html,body').animate({scrollTop: jakDaleko});
+    $("html, body").animate({scrollTop: jakDaleko}, 1);
+    //$('html,body').animate({scrollTop: jakDaleko});
     //$('html,body').scrollTop(jakDaleko);
     //$('html,body').animate({scrollTop: $('#imhere').offset().top});
   });

@@ -1,59 +1,76 @@
 function showSearchResult(data) { // to show search data || BIZA 
+    var t3 = performance.now();
     getAndApeendNamesStitky().then(function(databata) {
         data = combineArraysOfObjects(data, databata);
-        var output = '';
+        var t5 = performance.now();
+        console.log("Call to spojeni " + (t5 - t3) + " milliseconds.");
+        var output = [];
         if($('#japan_czech').text() == 'CZ') { // what to show first based on chosen search language 
+            var t0 = performance.now();
             for (let i = 0; i < data.length; i++) {
-                output += '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">';
-                output += '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">';
-                output += '<div class=""><p class=" flow-text searchINByJQUERY">'+data[i][czechIndexName]+'</p></div>';                
-                output += '<div class=""><p class=" flow-text">'+data[i][japanIndexName]+'</p></div>';
+               output.push( '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">');
+               output.push( '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">');
+               output.push( '<div class=""><p class=" flow-text searchINByJQUERY">'+data[i][czechIndexName]+'</p></div>');                
+               output.push( '<div class=""><p class=" flow-text">'+data[i][japanIndexName]+'</p></div>');
                 if (data[i][typeIndexName] == 'word') {
-                    output += '<div class=""><p class=" flow-text">slovíčko</p></div>';
+                   output.push( '<div class=""><p class=" flow-text">slovíčko</p></div>');
                 } else {
-                    output += '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>';
+                   output.push( '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>');
                 }
                 // for showing stitky
-                output += '<div class="stitkyContainsContainer">';
-                output += '<p class=" flow-text">stityk</p>';
+               output.push( '<div class="stitkyContainsContainer">');
+               output.push( '<p class=" flow-text">stityk</p>');
                 if (typeof data[i][StitkyForShowing] !== 'undefined') {
                     data[i][StitkyForShowing].forEach(element => 
-                        output += '<p class=" flow-text">'+element+'</p>');
+                       output.push( '<p class=" flow-text">'+element+'</p>')
+                    );
                 }
                 
                 
-                output += '</div>';
-                output +='</div>';
+               output.push( '</div>');
+               output.push('</div>');
                 // end for stitky
-                output +='</a>';       
+               output.push('</a>');
+
+               
             }
+            
+            document.getElementById("searchResult").innerHTML = output.join('');
+            var t1 = performance.now();
+            console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
         } else {
+            var t0 = performance.now();
             for (let i = 0; i < data.length; i++) {
-                output += '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">';
-                output += '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">';
-                output += '<div class=""><p class=" flow-text searchINByJQUERY">'+data[i][japanIndexName]+'</p></div>';
-                output += '<div class=""><p class=" flow-text">'+data[i][czechIndexName]+'</p></div>';                
+                output.push( '<a href="pages/searchResult.php?id='+data[i][IDIndexName]+'">');
+                output.push( '<div class="z-depth-1 searchResultDiv" data-id="'+data[i][IDIndexName]+'">');
+                output.push( '<div class=""><p class=" flow-text searchINByJQUERY">'+data[i][japanIndexName]+'</p></div>');
+                output.push( '<div class=""><p class=" flow-text">'+data[i][czechIndexName]+'</p></div>');                
                 if (data[i][typeIndexName] == 'word') {
-                    output += '<div class=""><p class=" flow-text">slovíčko</p></div>';
+                    output.push( '<div class=""><p class=" flow-text">slovíčko</p></div>');
                 } else {
-                    output += '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>';
+                    output.push( '<div class=""><p class=" flow-text">'+data[i][typeIndexName]+'</p></div>');
                 }
                 // for showing stitky
-                output += '<div class="stitkyContainsContainer">';
-                output += '<p class=" flow-text">stityk</p>';
+                output.push( '<div class="stitkyContainsContainer">');
+                output.push( '<p class=" flow-text">stityk</p>');
                 if (typeof data[i][StitkyForShowing] !== 'undefined') {
                     data[i][StitkyForShowing].forEach(element => 
-                        output += '<p class=" flow-text">'+element+'</p>');
+                        output.push( '<p class=" flow-text">'+element+'</p>')
+                    );
                 }
                 
                 
-                output += '</div>';
-                output +='</div>';
+                output.push( '</div>');
+                output.push('</div>');
                 // end for stitky
-                output +='</a>';       
+                output.push('</a>');      
             }
+            $('#searchResult').html(output.join(''));
+            var t1 = performance.now();
+            console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
         }
-        $('#searchResult').html(output);
+        //$('#searchResult').html(output);
+        //document.getElementById("searchResult").innerHTML = output.join('');
     });
 }
 function showOpenedeResult(data) { // to show opened data || BIZA
