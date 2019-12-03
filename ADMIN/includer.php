@@ -2,4 +2,5 @@
 	include 'PHP/render.php';
 	include 'PHP/connect.php';
 	include 'PHP/db.php';
+	include 'PHP/functions.php';
 ?>

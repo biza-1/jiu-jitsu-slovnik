@@ -14,7 +14,7 @@
     );*/
     define('DB_NAME', 'd231039_slovnik');
 	define('DB_USER', 'w231039_slovnik');
-	define('DB_PASSWORD', 'HnDddPMx');
+	define('DB_PASSWORD', 'cgHEP7eJlBHDPxcqMRtGyYlnkzTxEfhkJrhAcxZphY9LRSZFA0YTXqCBGrmSSb78E46rXwklxkQJE0XSL37MPzvdYq3R0CXb2mr@');
 	define('DB_HOST', 'md67.wedos.net');
 
 	global $db;
