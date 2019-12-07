@@ -10,18 +10,7 @@ include "includer.php";
 </head>
 
 <body>
-  <!-- searching word -->
-  <div class="row">
-    <form class="col s12">
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="nazev" type="text" class="validate">
-          <label for="nazev">Název</label>
-        </div>
-      </div>
-    </form>
-  </div>
-  <!-- searching word TEST -->
+  <!-- searching word without IndexeDB -->
   <div class="row">
     <form class="col s12">
       <div class="row">

@@ -21,15 +21,21 @@ var IDIndexNameINLABELS = 'ID';
 var userIDIndexNameINLABELS = 'userID';
 var nameIndexNameLABELS = 'name';
 var containsIndexNameLABELS = 'contains';
-// extended store for words to keep name of STITKY > words renew every time on wifi
-var stitkyStoreName = 'stitky';
-var idOfWordsStitky = 'ID';
+// extended store for words to keep name of STITKY > words renew every time on wifi > reused to be faster w/o combining
+var stitkyStoreName = sortStoreName;
+var idOfWordsStitky = IDIndexName;
 var StitkyForShowing = 'STITKYHolder';
+// store for metadata in local
+// name of metadata store
+var metadataStoreNameLOCAL = 'metadataLOCAL'; 
+var IDIndexNameINMetadataLOCAL = 'ID';
+var keyIndexNameMetadataLOCAL = 'type';
+var valueIndexNameMetadataLOCAL = 'value';
 // DEXIE.js (Very smart >NICE<)
 var db = new Dexie(dbName);
 db.version(1).stores({ // the name has to coreespond with sortStoreName
-    [sortStoreName]: IDIndexName+','+czechIndexName+','+japanIndexName+','+typeIndexName,
+    [sortStoreName]: IDIndexName+','+czechIndexName+','+japanIndexName+','+typeIndexName+','+StitkyForShowing,
     [metadataStoreName]: IDIndexNameINMetadata+','+keyIndexNameMetadata+','+valueIndexNameMetadata,
     [labesStoreName]:   '++' + IDIndexNameINLABELS+','+userIDIndexNameINLABELS +','+  nameIndexNameLABELS +','+ containsIndexNameLABELS,
-    [stitkyStoreName]: idOfWordsStitky +','+StitkyForShowing
+    [metadataStoreNameLOCAL]: IDIndexNameINMetadataLOCAL+','+keyIndexNameMetadataLOCAL+','+valueIndexNameMetadataLOCAL,
 });

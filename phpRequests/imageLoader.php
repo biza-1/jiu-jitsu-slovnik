@@ -6,7 +6,10 @@
          // for loading images asynchrounously, so that SW saves them in dynamic cache (is called by AJAX)    
         $dir = "../images/images/";
         $files = scandir($dir, 0);
-        for($i = 2; $i < count($files); $i++)
-        echo '<img src="../images/images/'.$files[$i].'" >';
+        $return = [];
+        for($i = 2; $i < count($files); $i++){
+            $return[] = 'images/images/'.$files[$i];
+        }
+        echo json_encode($return);
     //}
 ?>
