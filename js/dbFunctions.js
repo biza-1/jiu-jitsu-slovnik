@@ -66,14 +66,19 @@ function getSearchResult() {
     var slovickaChecked = $('#TechniquesWordsOnClickSlovicka').is(':checked');
     var techniquesChecked = $('#TechniquesWordsOnClickTechniky').is(':checked');
     if (showAllThing) {
-        db[sortStoreName].toArray(function(data) {
-            showSearchResult(data);
-        });
+        db[sortStoreName]
+            .offset(3500)
+            .limit(50)
+            .toArray(function(data) {
+                showSearchResult(data);
+            });
     } else if (slovickaChecked && techniquesChecked) {
         techniquesCheckedAtributes.push('word');
         db[sortStoreName]
             .where(typeIndexName)
             .anyOf(techniquesCheckedAtributes)
+            .offset(3500)
+            .limit(50)
             .toArray(function(data) {
                 showSearchResult(data);
             });
@@ -119,6 +124,9 @@ function getSimilarWords(search) {
     db[sortStoreName]
         .where(japanIndexName)
         .anyOf(search)
+        .and(function(data) {
+            return data[typeIndexName] == 'word';
+        })
         .toArray(function(data) {
             showSimilarWords(data);
         });
@@ -198,12 +206,10 @@ function onSignIn(googleUser) {
                 [keyIndexNameMetadata]: 'userLogin',
                 [valueIndexNameMetadata]: data,
             };
-            db[metadataStoreName]
-                .put(dataAdd)
-                .then(function() {
-                    // when user changes it deletes all stitky for showing and uses theirs instead
-                    updateSlovickaWithStitky();
-                });
+            db[metadataStoreName].put(dataAdd).then(function() {
+                // when user changes it deletes all stitky for showing and uses theirs instead
+                updateSlovickaWithStitky();
+            });
 
             $('.showUserLogOff').html(
                 '<a href="#" onclick="signOut();">Sign out</a>',
@@ -215,18 +221,17 @@ function onSignIn(googleUser) {
 function signOut() {
     // when user signs out wiht google
     var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(
-        function() {
-            db[metadataStoreName]
-                .where(IDIndexNameINMetadata)
-                .equals(0)
-                .delete().then(function() {
-                    db[sortStoreName].toCollection().modify(function(friend) {
-                        friend[StitkyForShowing] = undefined;
-                    });
-                })
-        }
-    );
+    auth2.signOut().then(function() {
+        db[metadataStoreName]
+            .where(IDIndexNameINMetadata)
+            .equals(0)
+            .delete()
+            .then(function() {
+                db[sortStoreName].toCollection().modify(function(friend) {
+                    friend[StitkyForShowing] = undefined;
+                });
+            });
+    });
 
     $('.showUserLogOff').html('');
 }
@@ -533,6 +538,7 @@ function getLabelContains(id) {
 // gets search result by ID || BIZA
 function getSearchResultByID(ids, StitkyData) {
     searc = ids.map(String);
+    console.log(searc);
     db[sortStoreName]
         .where(IDIndexName)
         .anyOf(searc)

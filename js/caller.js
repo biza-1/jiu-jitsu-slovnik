@@ -9,18 +9,16 @@ $(document).ready(function() {
                 // if the last update was longer than a day
                 ifCurrentTimeBiggerThan().then(function(ifLongerThanDay) {
                     if(ifLongerThanDay === true) {
-                        console.log("ha");
-                        getImagesToCahce(); //for caching images
+                        console.log("ha");                        
                         dbGetSlovicka();
                     }
                 });
-            } else {
-                getImagesToCahce(); //for caching images
+            } else {                
                 dbGetSlovicka();
             }
         });
         
-        getImagesToCahce(); //for caching images
+        
         getSearchResult();       
         console.log(Date.now()/86400000);
     } else {
@@ -67,15 +65,15 @@ $(document).ready(function() {
     // test
     $('#nazev2').on('input propertychange paste', function(e) {
         var searchValue = $('#nazev2').val();
-        var jakDaleko = $(
-            '.searchINByJQUERY:contains("' + searchValue + '")',
-        ).first().length;
-        if (jakDaleko) {
-            jakDaleko = $('.searchINByJQUERY:contains("' + searchValue + '")')
+        jakDaleko = $('.searchINByJQUERY:contains("' + searchValue + '")')
                 .first()
-                .offset().top;
-
-            $('html, body').animate({ scrollTop: jakDaleko }, 1);
+                .offset()
+        console.log(jakDaleko);
+        //$.contains('.searchINByJQUERY', searchValue);
+        if (jakDaleko != 'undefined') {
+            
+            //$(window).scrollTop(jakDaleko);
+            $('html, body').animate({ scrollTop: jakDaleko.top }, 1);
         }
 
         //$(document).scrollTop(jakDaleko-velikostDocment+velikostDocment2);

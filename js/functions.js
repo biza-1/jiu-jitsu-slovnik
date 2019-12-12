@@ -112,20 +112,6 @@ function checkIfOnline(dots) {
         return false;
     }
 }
-// for saving images to cache || BIZA
-function getImagesToCahce() {
-    $.ajax({
-        type: 'POST',
-        url: 'phpRequests/imageLoader.php',
-        data: 'check',
-        success: function(data) {
-            data = JSON.parse(data);
-            $(data).each(function() {
-                var image = $('<img />').attr('src', this);
-            });
-        },
-    });
-}
 
 // function to make element fade in and than to fade out || BIZA
 function makeFadeInOut(name) {

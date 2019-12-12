@@ -21,7 +21,7 @@ function showSearchResult(data) {
                     '</p></div>',
             );
             output.push(
-                '<div class=""><p class=" flow-text">' +
+                '<div class=""><p class="flow-text">' +
                     data[i][japanIndexName] +
                     '</p></div>',
             );
@@ -128,7 +128,7 @@ function showOpenedeResult(data) {
         getSimilarTechniques(data[0][japanIndexName]);
     } else {
         output +=
-            '<div class=""><img src="../images/images/' +
+            '<div class=""><img src="../../duchoma18/search v1.1/img/' +
             data[0][imageUrlNONIndexName] +
             '" alt="' +
             data[0][japanIndexName] +

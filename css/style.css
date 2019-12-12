@@ -1,27 +1,28 @@
-.selectedSearchResult { /* for showing that user selected something*/
-    background-color: rgb(146, 238, 207) !important ;
+.selectedSearchResult {
+  /* for showing that user selected something*/
+  background-color: rgb(146, 238, 207) !important ;
 }
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 #longHoldBox {
-    width: 100%;
-    height: 70px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rebeccapurple;
-    z-index: 100;
-    display: none;
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rebeccapurple;
+  z-index: 100;
+  display: none;
 }
 .modalStitkyControleerContainer {
-    width: 100%;
-    height: 3rem;
-    margin-bottom: 2rem;
+  width: 100%;
+  height: 3rem;
+  margin-bottom: 2rem;
 }
 .buttonsToAddRemove {
-    margin-right: 2.3rem;
+  margin-right: 2.3rem;
 }
 html,
 body {
@@ -31,4 +32,3 @@ body {
   padding: 0px;
   overflow-x: hidden;
 }
-
