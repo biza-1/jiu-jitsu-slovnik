@@ -10,5 +10,5 @@
 	$sql = "UPDATE techniky SET imageUrl = :imageUrl WHERE ID = :id"; // updatuje v DB techniky hodnotu imageUrl || Duchoslav
 	$sqlProvedeni = $db->prepare($sql);
 	$stav = $sqlProvedeni->execute($data);
-
+	echo "Obrázek byl smazán";
 ?>

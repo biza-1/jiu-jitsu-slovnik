@@ -120,7 +120,7 @@
         $render .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">';
         return $render;    
 	}
-	function renderJsLink($dots) { // for rendering JS links || BIZA    
+	function renderJsLink($dots, $callerName) { // for rendering JS links || BIZA    
         $dotas = "../"; // add dots to choose folder automaticly
         $dotingSystem = "";        
         for ($i=0; $i < $dots; $i++) {
@@ -128,7 +128,7 @@
         }
         $render = '';        
         $render .= '<script src="'.$dotingSystem.'JS/render.js"></script>';     
-        $render .= '<script src="'.$dotingSystem.'JS/search.js"></script>';
+        $render .= '<script src="'.$dotingSystem.'JS/'.$callerName.'"></script>';
         return $render;    
     }   
     function techniques_vyber_result($data) { // zobrazi typy pro vyber co chce user zobrazit || BIZA

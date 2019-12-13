@@ -51,9 +51,12 @@
     <div class="modal-content"> 
       <form id="add_new_word">
         <input type="text" name="japanese" id="japanese" placeholder="japanese">
+        <!--<button id="edit-pridavani" class="odkaz" style="display: none;">Slovíčko už existuje, můžete ho upravit</button>-->
+        <a class="waves-effect waves-light btn modal-trigger zkouska odkaz" id="edit-pridavani" href="#modal1" data-id="" style="display: none;">Slovíčko už existuje, můžete ho upravit</a>
         <input type="text" name="czech" id="czech" placeholder="czech">
-        <input type="submit" name="submit">
+        <input type="submit" name="submit" value="Přidat a pokračovat v přidávání" id="add-continue">
       </form>
+      <button id="add-close">Přidat a zavřít</button>
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
@@ -104,6 +107,6 @@
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
   </div>
-  <?=renderJsLink(2)?>
+  <?=renderJsLink(2, "search.js")?>
 </body>
 </html>

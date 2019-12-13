@@ -9,6 +9,6 @@
 <body>
 	<h1>Správa uživatelů</h1>
 	<div class="users"></div>
-    <script src="../../JS/users.js"></script>
+    <?=renderJsLink(2, "users.js")?>
 </body>
 </html>

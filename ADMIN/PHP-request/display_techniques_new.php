@@ -8,6 +8,6 @@
 	$data = $sqlProvedeni->fetchAll(PDO::FETCH_ASSOC);
 
 	//var_dump($data);
-	//echo techniques_result($data);
-	echo json_encode($data);
+	echo techniques_result($data);
+	//echo json_encode($data);
 ?>
