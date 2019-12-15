@@ -41,7 +41,8 @@ function dbGetSlovicka() {
     });
 }
 // getting search result (supposed to be smart) || BIZA
-function getSearchResult() {
+function getSearchResult(whereToShowData = 'new') {
+    // whereToShowData > if appennd, preppend or replace html
     // searching in czech or japanese and changing the value
     if ($('.selectAllDiselectAll').length == 0) {
         var showAllThing = true;
@@ -54,33 +55,111 @@ function getSearchResult() {
         var searchIn = japanIndexName;
     } // what to search in if in Japanese of Czech
     // search value
-    var searchValue = $('#nazev').val();
-    //if search in Words / Techniques (and what techniques)
-    // techniques selected altributes
-    var techniquesCheckedAtributes = $('.selectAllDiselectAll:checked')
-        .map(function() {
-            return $(this).data('searchvalue');
-        })
-        .get();
-    // with both
+    var searchValue = $('#nazev2').val();
+    // if all types of techniques are checked for better performance
+    var allTypesOfTechniquesChecked = document.getElementById(
+        'selectAllDiselectAllControllerSTITKY',
+    ).checked;
+    // what types to search in
     var slovickaChecked = $('#TechniquesWordsOnClickSlovicka').is(':checked');
     var techniquesChecked = $('#TechniquesWordsOnClickTechniky').is(':checked');
+    // TODO check if all stitky checked
+    var allTypesOfTechniquesChecked = $(
+        '#selectAllDiselectAllControllerSTITKY',
+    ).is(':checked');
+    //if search in Words / Techniques (and what techniques)
+    // techniques selected altributes
+    if (!allTypesOfTechniquesChecked && techniquesChecked) {
+        // gets only when all techniques not checked or when teqniques not selected
+        var techniquesCheckedAtributes = $('.selectAllDiselectAll:checked')
+            .map(function() {
+                return $(this).data('searchvalue');
+            })
+            .get();
+    }
+    console.log(
+        slovickaChecked,
+        techniquesChecked,
+        allTypesOfTechniquesChecked,
+    );
     if (showAllThing) {
+        var t0 = performance.now();
         db[sortStoreName]
-            .offset(3500)
-            .limit(50)
+            .orderBy(searchIn)
+            .offset(currentPage * pageSize)
+            .limit(pageSize)
             .toArray(function(data) {
-                showSearchResult(data);
+                if (data.length > 0) {
+                    var t1 = performance.now();
+                    console.log(
+                        'bez vyhledavani ' + (t1 - t0) + ' milliseconds.',
+                    );
+                    showSearchResult(data, whereToShowData);
+                }
             });
-    } else if (slovickaChecked && techniquesChecked) {
-        techniquesCheckedAtributes.push('word');
-        db[sortStoreName]
+    } else if (
+        slovickaChecked &&
+        techniquesChecked &&
+        allTypesOfTechniquesChecked
+    ) {
+        var t0 = performance.now();
+        /*db[sortStoreName]
             .where(typeIndexName)
             .anyOf(techniquesCheckedAtributes)
-            .offset(3500)
-            .limit(50)
+            .offset(0)
+            .limit(pageSize)
             .toArray(function(data) {
+                if (data.length > 0) {
                 showSearchResult(data);
+                }
+            });*/
+
+        db[sortStoreName]
+            .where(searchIn)
+            .startsWithIgnoreCase(searchValue)
+            .offset(currentPage * pageSize)
+            .limit(pageSize)
+            .toArray(function(data) {
+                if (data.length > 0) {
+                    var t1 = performance.now();
+                    console.log(
+                        's vyhledavani a ebz ' + (t1 - t0) + ' milliseconds.',
+                    );
+                    // TODO CHECK if returned any data
+                    showSearchResult(data, whereToShowData);
+                }
+            });
+    } else if (slovickaChecked && techniquesChecked) {
+        var t0 = performance.now();
+        techniquesCheckedAtributes.push('word');
+        /*db[sortStoreName]
+            .where(typeIndexName)
+            .anyOf(techniquesCheckedAtributes)
+            .offset(0)
+            .limit(pageSize)
+            .toArray(function(data) {
+                if (data.length > 0) {
+                showSearchResult(data);
+                }
+            });*/
+
+        db[sortStoreName]
+            .where(searchIn)
+            .startsWithIgnoreCase(searchValue)
+            .and(function(data) {
+                if (techniquesCheckedAtributes.includes(data[typeIndexName])) {
+                    return true;
+                }
+            })
+            .offset(currentPage * pageSize)
+            .limit(pageSize)
+            .toArray(function(data) {
+                if (data.length > 0) {
+                    var t1 = performance.now();
+                    console.log('s vyhledavani' + (t1 - t0) + ' milliseconds.');
+                    // TODO CHECK if returned any data
+                    showSearchResult(data, whereToShowData);
+                }
             });
     } else if (slovickaChecked) {
         // with only Word selected
@@ -88,8 +167,12 @@ function getSearchResult() {
         db[sortStoreName]
             .where(typeIndexName)
             .equals('word')
+            .offset(currentPage * pageSize)
+            .limit(pageSize)
             .toArray(function(data) {
-                showSearchResult(data);
+                if (data.length > 0) {
+                    showSearchResult(data, whereToShowData);
+                }
             });
     } else if (techniquesChecked) {
         // with only Technques checked
@@ -97,8 +180,12 @@ function getSearchResult() {
         db[sortStoreName]
             .where(typeIndexName)
             .anyOf(techniquesCheckedAtributes)
+            .offset(currentPage * pageSize)
+            .limit(pageSize)
             .toArray(function(data) {
-                showSearchResult(data);
+                if (data.length > 0) {
+                    showSearchResult(data, whereToShowData);
+                }
             });
     } else {
         showSearchResult('');

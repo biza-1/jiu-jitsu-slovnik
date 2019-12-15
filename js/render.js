@@ -1,9 +1,8 @@
-function showSearchResult(data) {
+function showSearchResult(data, whereToShowData) {
     // to show search data || BIZA
     var output = [];
     if ($('#japan_czech').text() == 'CZ') {
         // what to show first based on chosen search language
-        var t0 = performance.now();
         for (let i = 0; i < data.length; i++) {
             output.push(
                 '<a href="pages/searchResult.php?id=' +
@@ -50,12 +49,41 @@ function showSearchResult(data) {
             // end for stitky
             output.push('</a>');
         }
-
-        document.getElementById('searchResult').innerHTML = output.join('');
-        var t1 = performance.now();
-        console.log('Call to doSomething took ' + (t1 - t0) + ' milliseconds.');
+        var node = document.createElement('div');
+        node.classList.add(
+            'paginationSlovnik',
+            'pageNummer' + currentPage + '',
+        );
+        node.innerHTML = output.join('');
+        // if it should show new data upon new search or append on scroll
+        if (whereToShowData == 'new') {
+            document.getElementById('searchResult').innerHTML = '';
+            document.getElementById('searchResult').appendChild(node);
+        } else if (whereToShowData == 'bottom') {
+            document.getElementById('searchResult').appendChild(node);
+            document.getElementById('preloaderConterntAfter').style.display = "none";
+            // hide top div
+            if (currentPage > 1) {
+                document
+                    .getElementsByClassName('paginationSlovnik')[0]
+                    .remove();
+            }
+        } else {
+            currentPage++; // because it works
+            var elementsInSearchResult = document.getElementsByClassName(
+                'paginationSlovnik',
+            );
+            document
+                .getElementById('searchResult')
+                .insertBefore(node, elementsInSearchResult[0]);
+            // hide top div
+            elementsInSearchResult[2].remove();
+            document.getElementById('preloaderConterntBefore').style.display = "none";
+        }
     } else {
-        var t0 = performance.now();
+        output.push(
+            '<div class="paginationSlovnik pageNummer' + currentPage + '">',
+        );
         for (let i = 0; i < data.length; i++) {
             output.push(
                 '<a href="pages/searchResult.php?id=' +
@@ -102,9 +130,10 @@ function showSearchResult(data) {
             // end for stitky
             output.push('</a>');
         }
-        $('#searchResult').html(output.join(''));
-        var t1 = performance.now();
-        console.log('Call to doSomething took ' + (t1 - t0) + ' milliseconds.');
+        output.push('</div>');
+        var node = document.createElement('div');
+        node.innerHTML = output.join('');
+        document.getElementById('searchResult').appendChild(node);
     }
     //$('#searchResult').html(output);
     //document.getElementById("searchResult").innerHTML = output.join('');

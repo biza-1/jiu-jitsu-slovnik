@@ -1,26 +1,33 @@
+// size of one page
+const pageSize = 25;
+var currentPage = 0;
+// for not loading content too many times
+var firstExecution = 0; // Store the first execution time
+var interval = 500; //
+// when scrolling
+var isUserScrolling = 0;
 $(document).ready(function() {
     // when document is ready and is online: tries to get data || BIZA
     // TODO in a variable declare that he opened and updated nad then dont update
     if (navigator.onLine) {
-        console.log('interssset');        
+        console.log('interssset');
         // if ammount of data bigged than 0 check for last time updated else update
         getAmountOfDataInSLOVICKA().then(function(ammount) {
             if (ammount > 0) {
                 // if the last update was longer than a day
                 ifCurrentTimeBiggerThan().then(function(ifLongerThanDay) {
-                    if(ifLongerThanDay === true) {
-                        console.log("ha");                        
+                    if (ifLongerThanDay === true) {
+                        console.log('ha');
                         dbGetSlovicka();
                     }
                 });
-            } else {                
+            } else {
                 dbGetSlovicka();
             }
         });
-        
-        
-        getSearchResult();       
-        console.log(Date.now()/86400000);
+
+        getSearchResult();
+        console.log(Date.now() / 86400000);
     } else {
         console.log('internet not');
         getSearchResult();
@@ -64,24 +71,52 @@ $(document).ready(function() {
     });
     // test
     $('#nazev2').on('input propertychange paste', function(e) {
-        var searchValue = $('#nazev2').val();
-        jakDaleko = $('.searchINByJQUERY:contains("' + searchValue + '")')
-                .first()
-                .offset()
-        console.log(jakDaleko);
-        //$.contains('.searchINByJQUERY', searchValue);
-        if (jakDaleko != 'undefined') {
-            
-            //$(window).scrollTop(jakDaleko);
-            $('html, body').animate({ scrollTop: jakDaleko.top }, 1);
-        }
-
-        //$(document).scrollTop(jakDaleko-velikostDocment+velikostDocment2);
-
-        //$('html,body').animate({scrollTop: jakDaleko});
-        //$('html,body').scrollTop(jakDaleko);
-        //$('html,body').animate({scrollTop: $('#imhere').offset().top});
+        getSearchResult();
     });
+    // on scroll to load content
+    $(window).scroll(function() {
+        // to prevent broken checking on mobile when scrolling
+        isUserScrolling = 1;
+        // down
+        if (
+            $(window).scrollTop() + 2 * $(window).height() >=
+            $(document).height()
+        ) {
+            // for not executing milion times
+            var date = new Date();
+            var milliseconds = date.getTime();
+            if (milliseconds - firstExecution > interval) {
+                firstExecution = milliseconds;
+                currentPage++;
+                document.getElementById(
+                    'preloaderConterntAfter',
+                ).style.display = 'block';
+                getSearchResult('bottom');
+            }
+            // up
+        } else if ($(window).scrollTop() <= $(window).height()) {
+            // for not executing milion times
+            var date = new Date();
+            var milliseconds = date.getTime();
+            if (milliseconds - firstExecution > interval) {
+                firstExecution = milliseconds;
+                if (currentPage > 1) {
+                    currentPage -= 2;
+                    document.getElementById(
+                        'preloaderConterntBefore',
+                    ).style.display = 'block';
+                    getSearchResult('top');
+                }
+            }
+        }
+    });
+    // when sctops scrolling
+    $(window).scroll(
+        _.debounce(function() {
+            // to prevent broken checking on mobile when scrolling
+            isUserScrolling = 0;
+        }, 150),
+    );
     // for checking Longpress for selecting tags
     var mousepress_time = 1000; // time before choosing
     var ceckIfTimer = 0; // checking if longpress occured
@@ -111,9 +146,11 @@ $(document).ready(function() {
             $(this).data(
                 'checkdown',
                 setTimeout(function(e) {
-                    $this.addClass('selectedSearchResult');
-                    ceckIfTimer = 1;
-                    $('#longHoldBox').show(); // for displaying box on top of screen to add or remove labels
+                    if (isUserScrolling == 0) {
+                        $this.addClass('selectedSearchResult');
+                        ceckIfTimer = 1;
+                        $('#longHoldBox').show(); // for displaying box on top of screen to add or remove labels
+                    }
                 }, mousepress_time),
             );
         })
