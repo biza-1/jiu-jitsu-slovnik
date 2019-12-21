@@ -3,34 +3,28 @@
 	$ID = $_POST['id'];
 
 	$data = array(
-		':ID' => $ID,
-		':type' => "user"
+		':ID' => $ID
 	);
-	$sql = "SELECT * FROM metadata WHERE ID = :ID AND type = :type";
+	$sql = "SELECT * FROM admin WHERE AdminID = :ID";
 	$sqlProvedeni = $db->prepare($sql);
 	$stav = $sqlProvedeni->execute($data);
 	$data = $sqlProvedeni-> fetchAll(PDO::FETCH_ASSOC); 
+	var_dump($data);
 
 	if (count($data) == 0) {
-		$type = "user";
-		$value = "admin";
-
 		$data = array(
-			':ID' => $ID,
-			':type' => $type,
-			':value' => $value
+			':ID' => $ID
 		);
 
-		$sql = "INSERT INTO metadata (ID, type, value) VALUES (:ID, :type, :value)";
+		$sql = "INSERT INTO admin (AdminID) VALUES (:ID)";
 		$sqlProvedeni = $db->prepare($sql);
 		$stav = $sqlProvedeni->execute($data);
 		echo "Z uživatele se stal admin";
 	} else {
 		$data = array(
-			':del_id' => $ID,
-			':type' => "user"
+			':del_id' => $ID
 		);
-		$sql = "DELETE FROM metadata WHERE ID = :del_id AND type = :type";
+		$sql = "DELETE FROM admin WHERE AdminID = :del_id";
 		$sqlProvedeni = $db->prepare($sql);
 		$stav = $sqlProvedeni->execute($data);
 		echo "Uživateli bylo odebráno admin";

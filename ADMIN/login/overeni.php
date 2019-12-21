@@ -27,17 +27,26 @@
 			$sql = "INSERT INTO users (email, name, surname, picture) VALUES (:email, :name, :surname, :picture)";
 			$sqlProvedeni = $db->prepare($sql);
 			$stav = $sqlProvedeni->execute($data);
-			
-			/*
-			$data = array(':email' => $email);
-			$sql = "SELECT * FROM users WHERE email = :email";
+		} else {
+			$id_user = $data[0]['ID'];
+			//echo json_encode($data[0]['ID']);
+			$data = array(':id_user' => $id_user);
+			$sql = "SELECT ID FROM users INNER JOIN admin ON users.ID = admin.AdminID WHERE ID = :id_user";
 			$sqlProvedeni = $db->prepare($sql);
 			$stav = $sqlProvedeni->execute($data);
 			$data = $sqlProvedeni-> fetchAll(PDO::FETCH_ASSOC);
-			echo json_encode($data[0]['ID']);
-			*/
-		} else {
-			//echo json_encode($data[0]['ID']);
+			var_dump($data);
+			if (!empty($data[0]['ID'])) {
+				echo "Je admin";
+				$_SESSION["userID"] = $id_user;
+				$_SESSION["adminID"] = $id_user;
+				echo $_SESSION["userID"];
+				echo "Je admin".$_SESSION["adminID"];
+			} else {
+				echo "Neni admin";
+				$_SESSION["userID"] = $id_user;
+				echo $_SESSION["userID"];
+			}
 		}
 	} else {
 	  // Invalid ID token

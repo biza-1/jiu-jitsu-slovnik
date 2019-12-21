@@ -127,8 +127,12 @@
             $dotingSystem .= $dotas;
         }
         $render = '';        
-        $render .= '<script src="'.$dotingSystem.'JS/render.js"></script>';     
-        $render .= '<script src="'.$dotingSystem.'JS/'.$callerName.'"></script>';
+        $render .= '<script src="'.$dotingSystem.'JS/render.js"></script>';
+        //$render .= '<script src="'.$dotingSystem.'JS/functions.js"></script>';
+        if ($callerName != "") {
+            $render .= '<script src="'.$dotingSystem.'JS/'.$callerName.'"></script>';
+        }     
+        $render .= '<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>';
         return $render;    
     }   
     function techniques_vyber_result($data) { // zobrazi typy pro vyber co chce user zobrazit || BIZA
@@ -148,5 +152,4 @@
             $returner .= '</p>';    
         }
         return $returner;
-    } 
-?>
+    }
