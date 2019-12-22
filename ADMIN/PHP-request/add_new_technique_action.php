@@ -69,7 +69,7 @@
 					$stav = $sqlProvedeni->execute($data);
 				    
 				}
-				echo "Slovíčko bylo přidáno";
+				echo "Technika byla přidáno";
 		    } else {
 		        foreach($errors as $error) {
 		            echo $error;
@@ -81,4 +81,3 @@
 	} else {
 		echo "Musíte vyplnit všechny pole";
 	}
-?>

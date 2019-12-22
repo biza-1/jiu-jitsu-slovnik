@@ -1,11 +1,13 @@
 <?php
-  include '../../includer.php';
+include '../../includer.php';
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
-	<?=renderHead("Vyhledávání", 2)?>
+  <?= renderHead("Vyhledávání", 2) ?>
 </head>
+
 <body>
   <a class="waves-effect waves-light btn modal-trigger slovicka" href="#modal2">Přidávání slovíčka</a>
   <a class="waves-effect waves-light btn modal-trigger types" href="#modal3">Přidávání typů</a>
@@ -36,11 +38,13 @@
       </div>
     </li>
   </ul>
-  <div id="here">	
-	</div>
+  <div class="pagination"></div>
+  <div id="here">
+  </div>
+  <div class="pagination"></div>
   <!-- Editace slovicka/techniky -->
   <div id="modal1" class="modal">
-    <div class="modal-content edit-slova"> 
+    <div class="modal-content edit-slova">
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
@@ -48,7 +52,7 @@
   </div>
   <!-- Pridavani slovicka -->
   <div id="modal2" class="modal">
-    <div class="modal-content"> 
+    <div class="modal-content">
       <form id="add_new_word">
         <input type="text" name="japanese" id="japanese" placeholder="japanese">
         <!--<button id="edit-pridavani" class="odkaz" style="display: none;">Slovíčko už existuje, můžete ho upravit</button>-->
@@ -64,7 +68,7 @@
   </div>
   <!-- Editace typů -->
   <div id="modal3" class="modal">
-    <div class="modal-content edit-typu"> 
+    <div class="modal-content edit-typu">
       <form id="add_new_type">
         <input type="text" name="type" id="type" placeholder="Typ">
         <input type="submit" name="submit">
@@ -79,17 +83,17 @@
   </div>
   <!-- Pridavani technik -->
   <div id="modal4" class="modal">
-    <div class="modal-content"> 
+    <div class="modal-content">
       <form id="add_new_technique">
         <input type="text" name="japanese" id="japanese-technique" placeholder="japanese">
         <input type="text" name="czech" id="czech-technique" placeholder="czech">
         <textarea placeholder="Desription" id="description"></textarea>
         <input type="file" name="picture" id="image"><br>
-      	<div class="input-field col s5">
+        <div class="input-field col s5">
           <select class="select-technique" style="display: block;">
-        		<option value="">Vyberte typ</option>
-        	</select>
-      	</div>
+            <option value="">Vyberte typ</option>
+          </select>
+        </div>
         <input type="submit" name="submit">
       </form>
     </div>
@@ -98,7 +102,7 @@
     </div>
   </div>
   <div id="modal5" class="modal">
-    <div class="modal-content delete-alert"> 
+    <div class="modal-content delete-alert">
       <h3>Opravdu chcete smazat?</h3>
       <button class="delete-word">Ano</button>
       <button class="modal-close">Ne</button>
@@ -107,6 +111,7 @@
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
   </div>
-  <?=renderJsLink(2, "search.js")?>
+  <?= renderJsLink(2, "search.js") ?>
 </body>
+
 </html>

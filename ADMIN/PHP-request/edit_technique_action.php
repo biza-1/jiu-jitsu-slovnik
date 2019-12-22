@@ -1,6 +1,5 @@
 <?php // kod pro editace technik/slovicek || Duchoslav
 	include '../includer.php';
-
 	if (!empty($_POST['japanese']) AND !empty($_POST['czech'])) {
 		$japanese = $_POST['japanese'];
 		$id = $_POST['id'];
@@ -86,10 +85,10 @@
 				echo "Slovíčko bylo upraveno";
 			}
 		} else {
-			echo "Slovíčko už je v databázi";
+			echo "Technika už je v databázi";
 		}
 	} else {
-		echo "Musíte vyplnit obě pole";
+		echo "Musíte vyplnit všechna pole";
 	}
 
 	

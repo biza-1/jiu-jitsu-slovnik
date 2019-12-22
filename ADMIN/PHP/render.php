@@ -114,7 +114,8 @@
 		$render .= '<title>'.$title.'</title>';
 		$render .= '<link rel="shortcut icon" href="'.$dotingSystem.'images/icons/favicon.ico" type="image/x-icon">';
         $render .= '<link rel="icon" href="'.$dotingSystem.'images/icons/favicon.ico" type="image/x-icon">';     
-        $render .= '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>';   
+        $render .= '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>';
+        $render .= '<link rel="stylesheet" href="/slovnik/admin/CSS/style.css">';   
         $render .= '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">';
         $render .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>';
         $render .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">';
@@ -153,3 +154,14 @@
         }
         return $returner;
     }
+// renderuje pagination || BIZA
+function render_pagination($count) {
+    $count = ceil($count);
+    $returner = '<a href="#" id="move_left" data-count="'.$count.'">&laquo;</a>';
+    $returner .= '<a class="pagination_page active pageba1" data-id="1">1</a>';
+    for ($i=2; $i <= $count; $i++) { 
+        $returner .= '<a class="pagination_page pageba'.$i.'" data-id="'.$i.'">'.$i.'</a>';
+    }
+    $returner .= '<a href="#" id="move_right" data-count="'.$count.'">&raquo;</a>';
+    return $returner;
+}
