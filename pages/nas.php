@@ -21,7 +21,7 @@ include "../includer.php";
 
     <div class="w3-third" style="margin-bottom:32px;">
         <div class="w3-card w3-container w3-bar-item" style="box-shadow:0 !important">
-            <img src="devs/biza.png" class="onas" alt="Alps">
+            
             <div class="w3-container w3-center">
                 <p>Matěj Bíža</p>
                 <p>bizama18@sps-prosek.cz</p>
@@ -31,7 +31,7 @@ include "../includer.php";
     </div>
     <div class="w3-third" style="margin-bottom:32px;">
         <div class="w3-card w3-container w3-bar-item" style="box-shadow:0 !important">
-            <img src="devs/duchoslav.png" class="onas" alt="Alps">
+            
             <div class="w3-container w3-center">
                 <p>Marek Duchoslav</p>
                 <p>duchoma18@sps-prosek.cz</p>
@@ -41,7 +41,7 @@ include "../includer.php";
     </div>
     <div class="w3-third" style="margin-bottom:32px;">
         <div class="w3-card w3-container w3-bar-item" style="box-shadow:0 !important">
-            <img src="devs/cech.jpg" class="onas" alt="Alps">
+            
             <div class="w3-container w3-center">
                 <p>Maxim Čech</p>
                 <p>cechma18@sps-prosek.cz</p>

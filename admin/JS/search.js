@@ -15,16 +15,8 @@ $(document).ready(function (e) {
             reader.readAsDataURL(input.files[0]);
         }
     }
-    $('#collapsibleTequniques').collapsible(); // collapsible for choosing what tequnisqe you want to search
-    // for showing options in techniques types from metadata
-    $.ajax({
-        type: 'POST',
-        url: '../../PHP-request/display_techniques_vybirani.php',
-        data: 'checking=5',
-        success: function (output) {
-            $('#techniquesChooser').html(output);
-        }
-    });
+
+    showTypesTechniques();
 
     $('.pagination').on('click', '.pagination_page', function (e) {
         page = $(this).data('id');
@@ -96,16 +88,19 @@ $(document).ready(function (e) {
     });
     $('#add_new_word').submit(function (e) {
         // pridani noveho slovicka bez zavreni modalu || Duchoslav
+        $('.edit-slova').html(''); // pro vycisteni editovaciho modaly > jsou duplicitni #ID
         e.preventDefault();
         var japanese = $('#japanese').val();
         var czech = $('#czech').val();
+        var description = $('#description1').val();
         $.ajax({
             type: 'POST',
             url: '../../PHP-request/add_new_action.php',
-            data: 'japanese=' + japanese + '&czech=' + czech,
+            data: 'japanese=' + japanese + '&czech=' + czech + '&description=' + description,
             success: function (data) {
                 $('#japanese').val(''); // po uspesnem pridani vymaze input, aby nedoslo k dvojitemu pridani
                 $('#czech').val('');
+                $('#description1').val("");
                 search_words();
                 modalInfo(data);
                 //alert(data);
@@ -127,20 +122,22 @@ $(document).ready(function (e) {
     })
     $('#add-close').click(function (e) {
         //pridani noveho slovicka se zavrenim modalu || Duchoslav
+        $('.edit-slova').html(''); // pro vycisteni editovaciho modaly > jsou duplicitni #ID
         e.preventDefault();
         var japanese = $('#japanese').val();
         var czech = $('#czech').val();
+        var description = $('#description1').val();
         $.ajax({
             type: 'POST',
             url: '../../PHP-request/add_new_action.php',
-            data: 'japanese=' + japanese + '&czech=' + czech,
+            data: 'japanese=' + japanese + '&czech=' + czech + '&description=' + description,
             success: function (data) {
                 console.log(data);
                 if (data == 'Slovíčko bylo přidáno') {
                     $('#modal2').modal('close');
+                    $('#japanese').val('');
+                    $('#czech').val('');
                 }
-                $('#japanese').val('');
-                $('#czech').val('');
                 search_words();
                 modalInfo(data);
                 //alert(data);
@@ -150,6 +147,7 @@ $(document).ready(function (e) {
 
     $('.techniques').click(function () {
         // zobrazovani typu v technikach || Duchoslav
+        $('.edit-slova').html(""); // kvuli duplicite pri uprave
         var type = 'technique';
         $('#japanese-technique').val('');
         $('#czech-technique').val('');
@@ -202,6 +200,7 @@ $(document).ready(function (e) {
 
         formData.append('description', description);
         formData.append('type', type);
+        console.log
         $.ajax({
             url: '../../PHP-request/add_new_technique_action.php',
             type: 'POST',
@@ -210,10 +209,14 @@ $(document).ready(function (e) {
                 if (close_modal == 'ano' && data == 'Technika byla přidána') {
                     $('#modal4').modal('close');
                 }
-                $('#japanese-technique').val(''); // po uspesnem pridani vymaze input, aby nedoslo k dvojitemu pridani
-                $('#czech-technique').val('');
-                $('#description').val('');
-                $('#image_nahled').attr('src', '../../img/neni.jpg');
+                // pro vymazani i pri pokracovani v pridavani
+                if (data == 'Technika byla přidána') {
+                    $('#japanese-technique').val(''); // po uspesnem pridani vymaze input, aby nedoslo k dvojitemu pridani
+                    $('#czech-technique').val('');
+                    $('#description').val('');
+                    $('#image_nahled').attr('src', '../../img/neni.jpg');
+                }
+
                 modalInfo(data);
                 //alert(data);
             },
@@ -221,6 +224,12 @@ $(document).ready(function (e) {
             contentType: false,
             processData: false
         });
+    });
+      $('#modal5').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            $('#modal5 .delete-word').click();
+        }
     });
     /*
     $('#add-close-technique').click(function(e) {
@@ -278,13 +287,15 @@ $(document).ready(function (e) {
         var edit_id = $(this).data('id');
         var classa = '.type-edit-' + edit_id;
         var value = $(classa).val();
+        var originalname = $(classa).data("originalname");
         $.ajax({
             type: 'POST',
             url: '../../PHP-request/edit_type_action.php',
-            data: 'value=' + value + '&id=' + edit_id,
+            data: 'value=' + value + '&id=' + edit_id + '&originalname=' + originalname,
             success: function () {
                 display_types();
                 modalInfo('Upraveno');
+                showTypesTechniques(); // ukaze zmenene typy technik aby se nadale dalo vyhledavat
                 //alert('Upraveno');
             }
         });
@@ -420,9 +431,11 @@ $(document).ready(function (e) {
                 $('.slovicka').click(function (e) {
                     // po kliknuti na pridani slovicka se vymaze input a tlacitko zmizi
                     e.preventDefault();
+                    $('.edit-slova').html(""); // kvuli duplicite pri uprave
                     $('#edit-pridavani').css('display', 'none');
                     $('#japanese').val('');
                     $('#czech').val('');
+                    $('#description1').val('');
                 });
                 $('.zkouska').click(function (e) {
                     // po kliknuti na "editovat slovicku uz zde je" se vymaze input a tlacitko zmizi puvodni modal
@@ -430,6 +443,7 @@ $(document).ready(function (e) {
                     $('#modal2').modal('close');
                     $('#japanese').val('');
                     $('#czech').val('');
+                    $('#description1').val('');
                 });
                 $('.delete').click(function () {
                     var id = $(this).data('id');
@@ -469,11 +483,22 @@ $(document).ready(function (e) {
                             inputs +=
                                 "<div class='w3-bar'><label>Japonsky: </label></div><div class='w3-bar'><input type='text' name='japanese' class='input_css' id='japanese' value='" +
                                 vyhledane['japanese'] +
-                                "'></div>";
+                                "' maxlength='255'></div>";
                             inputs +=
                                 "<div class='w3-bar' style='margin-top:16px'><label>Česky: </label></div><div class='w3-bar'><input type='text' name='czech' class='input_css' id='czech' value='" +
                                 vyhledane['czech'] +
-                                "'></div>";
+                                "' maxlength='255'></div>";
+                            var textarea_content = vyhledane['content'];
+                            var new_textarea = textarea_content.replace(
+                                /<p>/g,
+                                ''
+                            );
+                            var newest_textarea = new_textarea.replace(
+                                /<\/p>/g,
+                                '\n'
+                            );
+                            inputs += '<div class="w3-bar" style="margin-top:16px;"><div id="descriptionBar1"><label>Popis:</label><textarea id="description1" class="description">' +
+                                newest_textarea + '</textarea></div></div>';
                             //inputs += "<div class='w3-bar-item'><select name='type' id='type'><option value='slovo'>Slovo</option><option value='slovo2'>Slovo2</option></select></div></div>";
                             inputs +=
                                 "<div class='w3-bar' style='margin-top:16px'><div class='w3-bar-item'><label for='submit' class='w3-button'><i class='material-icons icons-button'>send</i>Upravit</label><input type='submit' name='submit' id='submit' class='inputfile inputfile-1'></div>";
@@ -488,11 +513,11 @@ $(document).ready(function (e) {
                             inputs +=
                                 "<div class='w3-bar'><label for='japanese'>Japonsky:</label><input style='width:100%;margin-bottom:16px;' type='text' name='japanese' class='input_css' id='japanese' value='" +
                                 vyhledane['japanese'] +
-                                "'></div>";
+                                "' maxlength='255'></div>";
                             inputs +=
                                 "<div class='w3-bar'><label for='czech'>Česky:</label><input style='width:100%; margin-bottom:16px;' type='text' name='czech' class='input_css' id='czech' value='" +
                                 vyhledane['czech'] +
-                                "'></div>";
+                                "' maxlength='255'></div>";
 
                             inputs +=
                                 "<div class='w3-bar-item'>Vyberte typ:</div><select class='select-techniques' style='margin-bottom:16px;'>";
@@ -529,7 +554,7 @@ $(document).ready(function (e) {
                             );
                             //inputs += "<textarea name='description' placeholder='Desription' id='description'>" +vyhledane['content'] +'</textarea>';
                             inputs +=
-                                "<div class='w3-bar'>Popis:</div><div class='w3-bar'><textarea name='description' placeholder='Desription' id='description' class='wide'>" +
+                                "<div class='w3-bar'>Popis:</div><div class='w3-bar'><textarea name='description' placeholder='Desription' id='description' class='wide description'>" +
                                 newest_textarea +
                                 '</textarea></div>';
                             inputs +=
@@ -594,11 +619,12 @@ $(document).ready(function (e) {
                         //console.log('submitaaaa');
                         var formData = new FormData(this);
 
-                        var description = $('#description').val();
+                        var description = $('.description').val();
                         var type = $('.select-techniques').val();
 
                         formData.append('type', type);
                         formData.append('id', id);
+                        formData.append('description', description);
                         $.ajax({
                             url: '../../PHP-request/edit_technique_action.php',
                             type: 'POST',
@@ -606,7 +632,10 @@ $(document).ready(function (e) {
                             success: function (data) {
                                 modalInfo(data);
                                 search_words();
-                                $('#modal1').modal('close');
+                                if (data == "Technika byla upravena" || data == "Slovíčko bylo upraveno" ) {
+                                    $('#modal1').modal('close');
+                                }
+                                
                                 //alert(data);
                             },
                             cache: false,

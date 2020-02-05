@@ -4,6 +4,8 @@
 		$japanese = $_POST['japanese'];
 		$czech = $_POST['czech'];
 		$type = "word";
+		$textarea_dcs = $_POST['description'];
+		$description = '<p>' . implode('</p><p>', array_filter(explode("\n", $textarea_dcs))) . '</p>';
 
 
 		$data = array(':japanese' => $japanese);
@@ -16,10 +18,11 @@
 			$data = array(
 				':japanese' => $japanese,
 				':czech' => $czech,
-				':type' => $type
+				':type' => $type,					
+				':content' => $description
 			);
 
-			$sql = "INSERT INTO slovicka (japanese, czech, type) VALUES (:japanese, :czech, :type)";
+			$sql = "INSERT INTO slovicka (japanese, czech, type, content) VALUES (:japanese, :czech, :type, :content)";
 			$sqlProvedeni = $db->prepare($sql);
 			$stav = $sqlProvedeni->execute($data);
 			echo "Slovíčko bylo přidáno";

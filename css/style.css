@@ -635,3 +635,21 @@ box-shadow: 0px 0px 5px 2px rgb(117, 0, 25);
 .SimilarThing {
   font-weight: 700;
 }
+.searchResultDiv h3 {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+.searchResultDiv h3 strong {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+#displayJapaneseOpenedOutput {
+  font-size:18px;
+  padding-left:0px;
+  padding-right:0px;
+  font-weight: bolder;
+}

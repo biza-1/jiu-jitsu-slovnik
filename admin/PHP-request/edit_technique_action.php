@@ -16,7 +16,7 @@
 		if (count($data) == 0) {
 			if ($_POST['type'] !== 'undefined') { // podle teto podminky se rozlissi jestli je to slovicko nebo technika => slovicko nema type || Duchoslav
 				// EDITACE TECHNIKY
-				if (!empty($_POST['japanese']) AND !empty($_POST['czech']) AND !empty($_POST['description'])) {
+				if (!empty($_POST['japanese']) AND !empty($_POST['czech'])) {
 					$id = $_POST['id'];
 					$japanese = $_POST['japanese'];
 					$czech = $_POST['czech'];
@@ -29,9 +29,10 @@
 						':japanese' => $japanese,
 						':czech' => $czech,
 						':type' => $type,
+						':content' => $description
 					);
 
-					$sql = "UPDATE slovicka SET japanese = :japanese, czech = :czech, type = :type WHERE ID = :id"; // updatuje v DB slovicka hodnoty japanese, czech, type || Duchoslav
+					$sql = "UPDATE slovicka SET japanese = :japanese, czech = :czech, content = :content, type = :type WHERE ID = :id"; // updatuje v DB slovicka hodnoty japanese, czech, type, content || Duchoslav
 					//$sql = "UPDATE slovicka SET japanese = :japanese, czech = :czech WHERE ID = :id";
 					$sqlProvedeni = $db->prepare($sql);
 					$stav = $sqlProvedeni->execute($data);
@@ -56,10 +57,9 @@
 					}
 					$data = array(
 						':id' => $id,
-						':imageUrl' => $imageUrl,
-						':content' => $description
+						':imageUrl' => $imageUrl						
 					);
-					$sql = "UPDATE techniky SET imageUrl = :imageUrl, content = :content WHERE ID = :id"; // updatuje v DB techniky hodnoty imageUrl, content || Duchoslav
+					$sql = "UPDATE techniky SET imageUrl = :imageUrl WHERE ID = :id"; // updatuje v DB techniky hodnoty imageUrl || Duchoslav
 					$sqlProvedeni = $db->prepare($sql);
 					$stav = $sqlProvedeni->execute($data);
 
@@ -73,14 +73,17 @@
 				$japanese = $_POST['japanese'];
 				$czech = $_POST['czech'];
 				$id = $_POST['id'];
+				$textarea = $_POST['description'];
+				$description = '<p>' . implode('</p><p>', array_filter(explode("\n", $textarea))) . '</p>';
 
 				$data = array(
 						':id' => $id,
 						':japanese' => $japanese,
 						':czech' => $czech,
+						':content' => $description
 				);
 
-				$sql = "UPDATE slovicka SET japanese = :japanese, czech = :czech WHERE ID = :id"; // updatuje v DB slovicka hodnoty japanese, czech || Duchoslav
+				$sql = "UPDATE slovicka SET japanese = :japanese, czech = :czech, content = :content WHERE ID = :id"; // updatuje v DB slovicka hodnoty japanese, czech || Duchoslav
 				$sqlProvedeni = $db->prepare($sql);
 				$stav = $sqlProvedeni->execute($data);
 				echo "Slovíčko bylo upraveno";

@@ -1,7 +1,7 @@
 <?php
 	define('DB_NAME', 'd231039_slovnik');
 	define('DB_USER', 'w231039_slovnik');
-	define('DB_PASSWORD', 'R*EAOUPAO7Z21@QLwLfKZL@9Jt@@j');
+	define('DB_PASSWORD', '');
 	define('DB_HOST', 'md67.wedos.net');
 
 	global $db;

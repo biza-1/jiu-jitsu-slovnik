@@ -1,14 +1,28 @@
 <?php // zobrazovani obsahu
 function search_result_render($data, $language)
 { // zobrazi vyskedky vyhledavani || Duchoslav
-    $returner = '';
+    $returner = '';    
     if ($language == 'japanese') {
         foreach ($data as $key) {
-            $returner .= '<div class="w3-bar w3-white w3-border-bottom"><div class="w3-bar w3-white"><div class="w3-bar-item" style="padding:0"><h3 style="heighh:30px"><strong>' . $key['japanese'] . '</strong></h3></div><br><div class="w3-bar"><div style="margin-left:60px"><h3 style="margin:0; height:30px">' . $key['czech'] . '</h3></div></div></div><div class="w3-bar w3-white"><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger odkaz w3-button" href="#modal1" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">edit</i>UPRAVIT</a></div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger delete w3-button" href="#modal5" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">delete</i>SMAZAT</a></div></div></div>';
+            if ($key['type'] == 'word') {
+                $type = '<div class="w3-item-bar w3-left" style="margin-top:8px">slovíčko</div>';
+                
+            } else {
+                $type = '<div class="w3-item-bar w3-left" style="margin-bottom:10px">' . $key['type'] .'</div>';
+                
+            }
+            $returner .= '<div class="w3-bar w3-white w3-border-bottom"><div class="w3-bar w3-white"><div class="w3-bar-item" style="padding:0"><h3 style="heighh:30px"><strong>' . $key['japanese'] . '</strong></h3></div><br><div class="w3-bar"><div style="margin-left:60px"><h3 style="margin:0; height:30px">' . $key['czech'] . '</h3></div></div></div><div class="w3-bar w3-white"><div class="w3-bar">'.$type.'</div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger odkaz w3-button" href="#modal1" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">edit</i>UPRAVIT</a></div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger delete w3-button" href="#modal5" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">delete</i>SMAZAT</a></div></div></div>';
         }
     } else {
         foreach ($data as $key) {
-            $returner .= '<div class="w3-bar w3-white w3-border-bottom"><div class="w3-bar w3-white"><div class="w3-bar-item" style="padding:0"><h3 style="height:30px"><strong>' . $key['czech'] . '</strong></h3></div><br><div class="w3-bar"><div style="margin-left:60px"><h3 style="margin:0; height:30px">' . $key['japanese'] . '</h3></div></div></div><div class="w3-bar w3-white"><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger odkaz w3-button" href="#modal1" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">edit</i>UPRAVIT</a></div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger delete w3-button" href="#modal5" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">delete</i>SMAZAT</a></div></div></div>';
+            if ($key['type'] == 'word') {
+                $type = '<div class="w3-item-bar w3-left" style="margin-top:8px">slovíčko</div>';
+                
+            } else {
+                $type = '<div class="w3-item-bar w3-left" style="margin-bottom:10px">' . $key['type'] .'</div>';
+                
+            }
+            $returner .= '<div class="w3-bar w3-white w3-border-bottom"><div class="w3-bar w3-white"><div class="w3-bar-item" style="padding:0"><h3 style="height:30px"><strong>' . $key['czech'] . '</strong></h3></div><br><div class="w3-bar"><div style="margin-left:60px"><h3 style="margin:0; height:30px">' . $key['japanese'] . '</h3></div></div></div><div class="w3-bar w3-white"><div class="w3-bar">'.$type.'</div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger odkaz w3-button" href="#modal1" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">edit</i>UPRAVIT</a></div><div class="w3-bar-item"><a class="waves-effect waves-light modal-trigger delete w3-button" href="#modal5" data-id="' . $key['ID'] . '"><i class="material-icons icons-button">delete</i>SMAZAT</a></div></div></div>';
         }
     }
 
@@ -62,7 +76,7 @@ function types_result($data)
     $returner = '';
     foreach ($data as $key) {
         $returner .= "<div class='w3-bar'><form method='POST' class='edit_type'>";
-        $returner .= "<div class='w3-bar'><input type='text' name='type-edit' class='type-edit-" . $key['ID'] . " input_css w3-border' value='" . $key['value'] . "' style='width:70%'></div>";
+        $returner .= "<div class='w3-bar'><input type='text' name='type-edit' class='type-edit-" . $key['ID'] . " input_css w3-border' value='" . $key['value'] . "' style='width:70%' data-originalname='" . $key['value'] . "'></div>";
         // idcka id='type-edit' id='delete_type' 
         //$returner .= "<input type='submit' name='submit' id='submit' data-id='".$key['ID']."'>";
         $returner .= "<div class='w3-bar' style='margin-top:16px;'><button type='submit' style='padding: 8px 13px!important;' class='submit-edit w3-bar-item w3-button' data-id='" . $key['ID'] . "' value='Submit'><i class='material-icons icons-button'>send</i>Upravit</button>";

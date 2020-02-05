@@ -6,13 +6,13 @@ function modalInfo(info) {
 // for smaller pagination || BIZA
 function smallerpagination() {
     var maxPerPage = 5;
-    
+
     var lastPageNumber = $('#move_left').data('count');
     // shows dots or no if more pages than maxPerPage
     if (lastPageNumber > maxPerPage) {
         // 
         for (let el of document.querySelectorAll('.pagination_page'))
-        el.style.display = 'none';
+            el.style.display = 'none';
         // 
         document.getElementsByClassName('morePages')[0].style.display = 'block';
         document.getElementsByClassName('morePages')[1].style.display = 'block';
@@ -48,9 +48,7 @@ function smallerpagination() {
                 'none';
         } else if (page > lastPageNumber - maxPerPage + howMuch) {
             for (
-                let index = lastPageNumber - maxPerPage + 1;
-                index <= lastPageNumber;
-                index++
+                let index = lastPageNumber - maxPerPage + 1; index <= lastPageNumber; index++
             ) {
                 document.getElementsByClassName(
                     'pageba' + index,
@@ -65,9 +63,7 @@ function smallerpagination() {
                 'none';
         } else {
             for (
-                let index = page - howMuch;
-                index < page - howMuch + maxPerPage;
-                index++
+                let index = page - howMuch; index < page - howMuch + maxPerPage; index++
             ) {
                 document.getElementsByClassName(
                     'pageba' + index,
@@ -87,14 +83,15 @@ function smallerpagination() {
         //
     }
 }
+
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function() {
+    auth2.signOut().then(function () {
         $.ajax({
             type: "POST",
             url: "/slovnik/admin/PHP-request/logout_action.php",
             data: "",
-            success: function(data) {
+            success: function (data) {
                 console.log('User signed out.');
                 window.location.href = "/slovnik/admin/login/";
             }
@@ -103,7 +100,19 @@ function signOut() {
 }
 
 function onLoad() {
-    gapi.load('auth2', function() {
+    gapi.load('auth2', function () {
         gapi.auth2.init();
+    });
+}
+
+function showTypesTechniques() {
+    // for showing options in techniques types from metadata
+    $.ajax({
+        type: 'POST',
+        url: '../../PHP-request/display_techniques_vybirani.php',
+        data: 'checking=5',
+        success: function (output) {
+            $('#techniquesChooser').html(output);
+        }
     });
 }

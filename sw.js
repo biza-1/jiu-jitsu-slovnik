@@ -1,6 +1,6 @@
 // serwice worker for offline mode || BIZA
 // cache name .
-const staticCacheName = 'site-static-v4';
+const staticCacheName = 'site-static-v6';
 const dynamicCacheName = 'dynamic-image-saver';
 // if you want to cache something add it to array
 const assets = [

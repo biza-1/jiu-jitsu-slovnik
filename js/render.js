@@ -179,11 +179,11 @@ function showOpenedeResult(data) {
     //console.log(data);
     var output = '';
     output +=
-        '<div class="w3-row"><div class="w3-bar w3-padding-32" style="padding-bottom:10px !important"><p class="w3-bar-item" style="padding-left:0px;padding-right:0px;font-size:18px">' +
-        data[0][japanIndexName] + ' </p><p class="w3-bar" style="margin-left:30px;font-size:18px"> ' + data[0][czechIndexName] +
-        '</p>';
+        '<div class="w3-row"><div class="w3-bar w3-padding-32" style="padding-bottom:10px !important"><div class="w3-bar" style="padding-left:0px;padding-right:0px;"><p class="w3-bar-item" id="displayJapaneseOpenedOutput" >' +
+        data[0][japanIndexName] + ' </p></div><div class="w3-bar" style="margin-left:30px;width: 93%;"><p  style="font-size:18px"> ' + data[0][czechIndexName] +
+        '</p></div>';
     if (data[0][typeIndexName] === 'word') {
-        output += '<p class="w3-bar-item w3-right" style="font-size:11px">Slovíčko</p></div><li class="divider" id="dividerPodobnaSlova"></li><div class="w3-bar SimilarThing">Podobné techniky:</div>';
+        output += '<p class="w3-bar-item w3-right" style="font-size:11px">Slovíčko</p><div class="w3-twothird"><div style="margin-left:16px;">' +data[0][contentNONIndexName] +'</div></div></div><li class="divider" id="dividerPodobnaSlova"></li><div class="w3-bar SimilarThing">Podobné techniky:</div>';
         // search teqniuqeus to search similaar
         getSimilarTechniques(data[0][japanIndexName]);
     } else {

@@ -10,7 +10,7 @@ $limitik = 50;
 $text = htmlspecialchars($text);
 // prepare the mysql query to select the users 
 if ($_POST['showAllThing'] == "true") {
-	$get_name = $db->prepare("SELECT slovicka.ID, slovicka.japanese, slovicka.czech, slovicka.type, techniky.imageUrl, techniky.content FROM slovicka LEFT JOIN `techniky` ON slovicka.ID=techniky.ID WHERE " . $language . "  LIKE concat('%', '" . $text . "', '%') LIMIT " . $limitik . " OFFSET " . $offsetik . "");
+	$get_name = $db->prepare("SELECT slovicka.ID, slovicka.japanese, slovicka.czech, slovicka.type, techniky.imageUrl, slovicka.content FROM slovicka LEFT JOIN `techniky` ON slovicka.ID=techniky.ID WHERE " . $language . "  LIKE concat('%', '" . $text . "', '%') LIMIT " . $limitik . " OFFSET " . $offsetik . "");
 	$sql66665 = "SELECT COUNT(ID) FROM slovicka WHERE " . $language . "  LIKE concat('%', '" . $text . "', '%')";
 } else {
 	if ($_POST['ifwannaWords'] == "true" and $_POST['ifwannaTechniques'] == "true") {
@@ -30,7 +30,7 @@ if ($_POST['showAllThing'] == "true") {
 		}
 		$whatType = rtrim($whatType, ',');
 	}
-	$get_name = $db->prepare("SELECT slovicka.ID, slovicka.japanese, slovicka.czech, slovicka.type, techniky.imageUrl, techniky.content FROM slovicka LEFT JOIN `techniky` ON slovicka.ID=techniky.ID WHERE " . $language . " LIKE concat('%', '" . $text . "', '%') AND type IN (" . $whatType . ") LIMIT " . $limitik . " OFFSET " . $offsetik . "");
+	$get_name = $db->prepare("SELECT slovicka.ID, slovicka.japanese, slovicka.czech, slovicka.type, techniky.imageUrl, slovicka.content FROM slovicka LEFT JOIN `techniky` ON slovicka.ID=techniky.ID WHERE " . $language . " LIKE concat('%', '" . $text . "', '%') AND type IN (" . $whatType . ") LIMIT " . $limitik . " OFFSET " . $offsetik . "");
 	$sql66665 = "SELECT COUNT(ID) FROM slovicka WHERE " . $language . " LIKE concat('%', '" . $text . "', '%') AND type IN (" . $whatType . ")";
 }
 

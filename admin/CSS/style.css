@@ -282,7 +282,13 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 #description{
   width: -webkit-fill-available;
 }
+#descriptionBar1{
+  width: -webkit-fill-available;
+}
 
+#description1{
+  width: -webkit-fill-available;
+}
 .w3-input{
   background-color: #fafafa;
 }

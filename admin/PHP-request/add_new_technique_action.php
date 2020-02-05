@@ -1,7 +1,7 @@
 <?php // pridani nove techniky do databaze || Duchoslav
 	include '../includer.php';
 
-	if (!empty($_POST['japanese']) AND !empty($_POST['czech']) AND !empty($_POST['description'])) {
+	if (!empty($_POST['japanese']) AND !empty($_POST['czech'])) {
 		$japanese = $_POST['japanese'];
 		$czech = $_POST['czech'];
 		$textarea_dcs = $_POST['description'];
@@ -38,10 +38,11 @@
 		    	$data = array(
 					':japanese' => $japanese,
 					':czech' => $czech,
-					':type' => $type
+					':type' => $type,					
+					':content' => $description
 				);
 
-				$sql = "INSERT INTO slovicka (japanese, czech, type) VALUES (:japanese, :czech, :type)";
+				$sql = "INSERT INTO slovicka (japanese, czech, type, content) VALUES (:japanese, :czech, :type, :content)";
 				$sqlProvedeni = $db->prepare($sql);
 				$stav = $sqlProvedeni->execute($data);
 
@@ -61,11 +62,10 @@
 				}	
 		    	$data = array(
 					':ID' => $ID,
-					':imageUrl' => $imageUrl,
-					':content' => $description
+					':imageUrl' => $imageUrl
 				);
 
-				$sql = "INSERT INTO techniky (ID, imageUrl, content) VALUES (:ID, :imageUrl, :content)";
+				$sql = "INSERT INTO techniky (ID, imageUrl) VALUES (:ID, :imageUrl)";
 				$sqlProvedeni = $db->prepare($sql);
 				$stav = $sqlProvedeni->execute($data);
 				    
@@ -79,5 +79,5 @@
 			echo "Slovíčko už je v databázi";
 		}
 	} else {
-		echo "Musíte vyplnit všechny pole";
+		echo "Musíte minimálně vyplnit japonský a český název a vybrat typ techniky";
 	}
