@@ -205,7 +205,7 @@ function render_pagination($count)
         $returner .= '<a class="pagination_page pageba' . $i . '" data-id="' . $i . '">' . $i . '</a>';
     }
     $returner .= '<a class="morePages2">...</a>';
-    if ($count > 2) {
+    if ($count > 1) {
         $returner .= '<a class="pagination_page pageba' . $count . '" data-id="' . $count . '">' . $count . '</a>';
     }
 

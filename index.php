@@ -18,7 +18,7 @@ include "includer.php";
   <div style="position:fixed; width:100%; z-index:90;top:0" class='z-depth-3'>
     <?= renderSideNav(0) ?>
     <div class="w3-bar w3-gray" id="uppermenu">
-      <a href="" class="w3-bar-item w3-button w3-padding-16">Jiu-Jitsu</a>
+      <a href="" class="w3-bar-item w3-button w3-padding-16">Jiu-Jitsu slovník</a>
       <!-- searching word without IndexeDB -->
 
       <div class="w3-bar-item" style="padding-left: 0px; padding:0; width:27%"><input id="nazev2" type="text"

@@ -12,7 +12,7 @@ include "../includer.php";
 <body>
     <?= renderSideNav(1) ?>
     <div class="w3-bar w3-gray" id="uppermenu">
-      <a href=".." class="w3-bar-item w3-button w3-padding-16">Jiu-Jitsu</a>
+      <a href=".." class="w3-bar-item w3-button w3-padding-16">Jiu-Jitsu slovník</a>
       <!-- sidenav - caller-->
       <div class="w3-bar-item w3-button w3-right w3-padding-16" onclick="w3_open()" style="padding: 12px 10px !important;"><i class="material-icons">menu</i></div>
     </div>
