@@ -22,7 +22,7 @@ include "includer.php";
       <!-- searching word without IndexeDB -->
 
       <div class="w3-bar-item" style="padding-left: 0px; padding:0; width:27%"><input id="nazev2" type="text"
-          class="input_css"><img src="images/icons/clear-24px.svg" alt="clear" height="18" id="clear-input"></img></div>
+          class="input_css"><img src="images/icons/clear-24px.svg" alt="clear" height="18" id="clear-input"></div>
       <!-- Czech/Japanese search -->
       <div id="japan_czech" class="w3-bar-item w3-button w3-padding-16">JP</div>
       <!--filter - caller-->
@@ -55,7 +55,7 @@ include "includer.php";
       Typy technik:
       <div class="w3-row">
         <button id="filter_button1" onclick="myFunction('Demo2')" class="w3-button w3-col w3-rest w3-gray"> <i
-            class="material-icons">arrow_drop_down</i></i></button>
+            class="material-icons">arrow_drop_down</i></button>
       </div>
       <div id="Demo2" class="w3-padding-16 w3-hide">
         <div id="techniquesChooser"></div>

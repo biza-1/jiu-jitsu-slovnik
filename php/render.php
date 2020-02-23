@@ -6,11 +6,10 @@
             $dotingSystem .= $dotas;
         }
         $render = '';
-        $render .= '<meta charset="UTF-8">';
         $render .= '<meta name="description" content="Slovník s Jiu-Jitsu slovíčky a technikami.">';
         $render .= '<meta name="keywords" content="Jiu-Jitsu, Jiu, Jitsu, slovník Jiu-Jitsu, slovník, slovník Matěj Bíža, Matěj Bíža, Bíža slovník, Bíža Jiu-Jitsu, Matěj Bíža Jiu-Jitsu, Matěj Bíža slovník, Matěj Bíža jiu jitsu slovník">';
         $render .= '<meta name="robots" content="index, follow">';
-        $render .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $render .= '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
         $render .= '<meta name="language" content="Czech">';
         $render .= '<meta name="author" content="Matěj Bíža">';
         $render .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -27,7 +26,7 @@
         $render .= '<script src="/slovnik/includeTECHNILOGIES/materializejs.js"></script>';
         $render .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">';
         $render .= '<script src="https://apis.google.com/js/platform.js" async defer></script>';
-        $render .= '<script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>'; // less Violations > better performance
+        $render .= '<script src="https://unpkg.com/default-passive-events"></script>'; // less Violations > better performance
         $render .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>'; // for some __ operations
         return $render;    
     }
@@ -75,23 +74,23 @@
             <div class="w3-sidebar w3-bar-block w3-white w3-animate-right" id="mySidebar">
                 <div id="userInfo">
                 </div>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <div class="user-view showUser w3-button w3-bar-item" style="padding:0; width:100%">      
                 <div id="profileinfo"></div> 
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
                 </div>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <div class="showUserLogOff"></div>
                 <a href="'.$dotingSystem.'" class="w3-bar-item w3-button w3-padding-16">Slovník</a>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <a href="'.$dotingSystem.'pages/stitky.php" class="w3-bar-item w3-button w3-padding-16">Štítky</a>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <a id="updateSlovnik" class="w3-bar-item w3-button w3-padding-16">Aktualizovat slovník</a>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <a href="'.$dotingSystem.'pages/nas.php" class="w3-bar-item w3-button w3-padding-16">O nás</a>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 <a href="'.$dotingSystem.'/slovnik/admin/" class="w3-bar-item w3-button w3-padding-16">Administrace</a>
-                <li class="divider"></li>
+                <div class="divider"></div>
                 
 
             </div>
